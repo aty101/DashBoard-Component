@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "type": "teacher",
+    "name": "Alice Johnson",
+    "description": "Mathematics teacher with 8 years experience, rating 4.6",
+    "count": 8,
+    "extra": {
+      "department": "Mathematics",
+      "rating": 4.6
+    }
+  },
+  {
+    "id": 2,
+    "type": "student",
+    "name": "Marcus Lee",
+    "description": "10th grade student with GPA 3.7 and 92% attendance",
+    "count": 3.7,
+    "extra": {
+      "grade_level": "10th",
+      "attendance_percentage": 92
+    }
+  },
+  {
+    "id": 3,
+    "type": "course",
+    "name": "Physics 101",
+    "description": "4 credits course taught by Dr. Samuel Reed with 32 enrolled students",
+    "count": 32,
+    "extra": {
+      "credits": 4,
+      "instructor": "Dr. Samuel Reed"
+    }
+  },
+  {
+    "id": 4,
+    "type": "admin_staff",
+    "name": "Rachel Gomez",
+    "description": "Admissions Officer with 5 years in service",
+    "count": 5,
+    "extra": {
+      "role": "Admissions Officer",
+      "office": "Building A, Room 204"
+    }
+  },
+  {
+    "id": 5,
+    "type": "classroom",
+    "name": "Room B-112",
+    "description": "Classroom with capacity 40 and equipment: Projector, Whiteboard, AC",
+    "count": 40,
+    "extra": {
+      "equipment": ["Projector", "Whiteboard", "AC"]
+    }
+  },
+  {
+    "id": 6,
+    "type": "event",
+    "name": "Science Fair",
+    "description": "Event on 2025-03-18 with 120 participants at Main Hall",
+    "count": 120,
+    "extra": {
+      "date": "2025-03-18",
+      "location": "Main Hall"
+    }
+  },
+  {
+    "id": 7,
+    "type": "library_book",
+    "name": "Introduction to Chemistry",
+    "description": "Book by Karen Mills, ISBN 978-1-23456-789-0, 3 copies available",
+    "count": 3,
+    "extra": {
+      "author": "Karen Mills",
+      "isbn": "978-1-23456-789-0"
+    }
+  },
+  {
+    "id": 8,
+    "type": "club",
+    "name": "Robotics Club",
+    "description": "Club with 18 members, supervised by Mr. Brian Carter, meets Thursday",
+    "count": 18,
+    "extra": {
+      "supervisor": "Mr. Brian Carter",
+      "meeting_day": "Thursday"
+    }
+  },
+  {
+    "id": 9,
+    "type": "bus",
+    "name": "Bus 12",
+    "description": "Bus driven by Tom Jenkins, capacity 50, route North Zone",
+    "count": 50,
+    "extra": {
+      "driver": "Tom Jenkins",
+      "route": "North Zone"
+    }
+  },
+  {
+    "id": 10,
+    "type": "cafeteria_menu",
+    "name": "Menu for 2025-02-15",
+    "description": "Menu includes Pasta, Salad, Juice",
+    "count": 3,
+    "extra": {
+      "items": [
+        { "meal": "Pasta", "price": 5.5 },
+        { "meal": "Salad", "price": 3.0 },
+        { "meal": "Juice", "price": 1.5 }
+      ]
+    }
+  }
+]
