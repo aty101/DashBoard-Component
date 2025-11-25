@@ -18,7 +18,9 @@ export default function DataCard({
   return (
     <>
       <div
-        className={`relative bg-white text-black flex justify-center items-center w-full h-[200px] cursor-grab select-none`}
+        className={`relative bg-white text-black p-3
+          flex justify-center items-center w-full 
+           cursor-grab select-none`}
         draggable
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
@@ -26,7 +28,7 @@ export default function DataCard({
       >
         <h2 className="text-2xl">{type}</h2>
         <button
-          className="absolute p-3 top-0 right-0 cursor-pointer "
+          className="absolute  top-0 right-0 cursor-pointer "
           onClick={handleClosedData}
         >
           <IoMdClose className="text-3xl" />

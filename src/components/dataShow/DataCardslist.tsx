@@ -41,7 +41,7 @@ export default function DataCardsList() {
   return (
     <>
       <div
-        className={` grid gap-4 auto-rows-[200px] ${
+        className={` grid gap-4  ${
           columns == 1 ? "grid-cols-1" : "grid-cols-2"
         }`}
       >

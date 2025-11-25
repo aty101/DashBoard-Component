@@ -3,7 +3,7 @@ import dummy from "@/dummy.json";
 import { useState } from "react";
 import DataCardsList from "./DataCardslist";
 import { DataShowProvider } from "@/utils/dataShow/DataShowProvider";
-import DataShowButtons from "./DataShowButtons";
+import DataShowButtons from "./dataShowButtons/DataShowButtons";
 
 export default function DataShow() {
   /* ...STATES INETIALIZATION */
