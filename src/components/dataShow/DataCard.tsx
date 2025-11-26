@@ -1,4 +1,4 @@
-import { DragEventHandler, MouseEventHandler } from "react";
+import { DragEventHandler, MouseEventHandler, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
 export default function DataCard({
@@ -15,16 +15,21 @@ export default function DataCard({
   handleClosedData: MouseEventHandler;
   handleDragOver: DragEventHandler;
 }) {
+  const [active, setActive] = useState<boolean>(false);
+  const handleActive = () => {
+    setActive((prev) => !prev);
+  };
   return (
     <>
       <div
         className={`relative bg-white text-black p-3
           flex justify-center items-center w-full 
-           cursor-grab select-none`}
+           cursor-grab select-none ${active && "col-span-full"}  hover:bg-gray-400`}
         draggable
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
+        onClick={() => handleActive()}
       >
         <h2 className="text-2xl">{type}</h2>
         <button

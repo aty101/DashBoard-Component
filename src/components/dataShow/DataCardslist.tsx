@@ -42,7 +42,7 @@ export default function DataCardsList() {
     <>
       <div
         className={` grid gap-4  ${
-          columns == 1 ? "grid-cols-1" : "grid-cols-2"
+          columns == 1 ? "grid-cols-1" : "grid-cols-5"
         }`}
       >
         {dataOrder.map((order, index) => {
