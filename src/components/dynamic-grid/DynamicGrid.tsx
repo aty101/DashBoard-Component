@@ -16,8 +16,8 @@ type WidgetDetail = {
 
 type DragPos = {
   id: number;
-  newX: number;
-  newY: number;
+  offsetX: number;
+  offsetY: number;
 };
 
 export default function DynamicGrid() {
@@ -37,15 +37,15 @@ export default function DynamicGrid() {
     );
     setDraggedItem({
       id,
-      newX: e.clientX - rect.left,
-      newY: e.clientY - rect.top,
+      offsetX: 0,
+      offsetY: 0,
     });
   };
   const mouseMove = (e: MouseEvent) => {
     if (!draggedItem) return;
 
-    const newX = Math.round((e.clientX - draggedItem.newX) / Col_Width);
-    const newY = Math.round((e.clientX - draggedItem.newY) / Row_Height);
+    const newX = e.clientX;
+    const newY = e.clientY;
     setWidgetsDetails((prev) =>
       prev.map((widget) => {
         if (widget.id !== draggedItem.id) return widget;
@@ -62,14 +62,20 @@ export default function DynamicGrid() {
   };
 
   useEffect(() => {
-    window.addEventListener("mousemove", mouseMove);
-    window.addEventListener("mouseup", mouseUp);
+    if (draggedItem) {
+      window.addEventListener("mousemove", mouseMove);
+      window.addEventListener("mouseup", mouseUp);
+    } else {
+      window.removeEventListener("mousemove", mouseMove);
+      window.removeEventListener("mouseup", mouseUp);
+    }
+
     return () => {
       window.removeEventListener("mousemove", mouseMove);
       window.removeEventListener("mouseup", mouseUp);
-      console.log(widgetsDetails);
     };
   }, [draggedItem]);
+
   return (
     <div
       className={`w-full relative p-2`}
@@ -84,9 +90,7 @@ export default function DynamicGrid() {
           style={{
             width: widget.width,
             height: widget.height,
-            transform: `translate(${widget.x * Col_Width}px,${
-              widget.y * Row_Height
-            }px)`,
+            transform: `translate(${widget.x}px,${widget.y}px)`,
           }}
           className="absolute bg-blue-100 inline-block m-2
           cursor-grab hover:bg-blue-700 "
