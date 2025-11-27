@@ -14,7 +14,7 @@ export default function DynamicGrid() {
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetail[]>([
     { id: 1, x: 0, y: 0, width: 2, height: 2 },
     { id: 2, x: 1, y: 1, width: 2, height: 2 },
-    // { id: 3, x: 2, y: 2, width: 200, height: 200 },
+    { id: 3, x: 2, y: 2, width: 2, height: 2 },
     // { id: 4, x: 3, y: 3, width: 200, height: 200 },
   ]);
 
@@ -43,18 +43,21 @@ export default function DynamicGrid() {
       ROW_HEIGHT
     );
   };
+  const handleMouseUp = () => {
+    mouseUp(finalPos!, setDraggedItem, setFinalPos, setWidgetsDetails);
+  };
 
   useEffect(() => {
     if (draggedItem) {
       window.addEventListener("mousemove", handleMouseMove);
+    }else {
+      window.removeEventListener("mousemove", handleMouseMove);
     }
-    let handleMouseUp: (e: MouseEvent) => void;
+
     if (draggedItem && finalPos) {
-      handleMouseUp = () => {
-        console.log(finalPos);
-        mouseUp(finalPos!, setDraggedItem, setFinalPos, setWidgetsDetails);
-      };
       window.addEventListener("mouseup", handleMouseUp);
+    } else {
+      window.removeEventListener("mouseup", handleMouseUp);
     }
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -63,7 +66,7 @@ export default function DynamicGrid() {
   }, [draggedItem, finalPos]);
 
   return (
-    <div className={`w-full relative p-2`} ref={parentRef}>
+    <div className={`w-full relative p-2 overflow-hidden`} ref={parentRef}>
       {widgetsDetails.map((widget) => (
         <div
           key={widget.id}
