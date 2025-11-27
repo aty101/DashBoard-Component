@@ -1,101 +1,98 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
+import { mouseDown } from "./mouseDown";
+import { DragPos, FinalPos, WidgetDetail } from "./types";
+import { mouseMove } from "./mouseMove";
+import { mouseUp } from "./mouseUp";
 
-import { Console } from "console";
-import { useEffect, useState } from "react";
-
-const Col_Width = 200;
-const Row_Height = 200;
-
-type WidgetDetail = {
-  id: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
-type DragPos = {
-  id: number;
-  offsetX: number;
-  offsetY: number;
-};
+const COL_NUM = 12;
+const COL_WIDTH = 100;
+const ROW_HEIGHT = 100;
 
 export default function DynamicGrid() {
+  const parentRef = useRef<HTMLDivElement>(null);
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetail[]>([
-    { id: 1, x: 0, y: 0, width: 200, height: 200 },
-    // { id: 2, x: 1, y: 1, width: 200, height: 200 },
+    { id: 1, x: 0, y: 0, width: 2, height: 2 },
+    { id: 2, x: 1, y: 1, width: 2, height: 2 },
     // { id: 3, x: 2, y: 2, width: 200, height: 200 },
     // { id: 4, x: 3, y: 3, width: 200, height: 200 },
   ]);
 
   const [draggedItem, setDraggedItem] = useState<DragPos | null>(null);
+  const [finalPos, setFinalPos] = useState<FinalPos | null>(null);
 
-  const mouseDown = (id: number, e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    console.log(
-      `CursorX : ${e.clientX}\nCursorY : ${e.clientY}\nDivX : ${rect.left}\nDivY : ${rect.top}`
-    );
-    setDraggedItem({
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>, id: number) => {
+    mouseDown(
       id,
-      offsetX: 0,
-      offsetY: 0,
-    });
-  };
-  const mouseMove = (e: MouseEvent) => {
-    if (!draggedItem) return;
-
-    const newX = e.clientX;
-    const newY = e.clientY;
-    setWidgetsDetails((prev) =>
-      prev.map((widget) => {
-        if (widget.id !== draggedItem.id) return widget;
-        return {
-          ...widget,
-          x: newX,
-          y: newY,
-        };
-      })
+      e,
+      parentRef,
+      setDraggedItem,
+      setFinalPos,
+      COL_WIDTH,
+      ROW_HEIGHT
     );
   };
-  const mouseUp = () => {
-    setDraggedItem(null);
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!draggedItem) return;
+    mouseMove(
+      e,
+      draggedItem,
+      setWidgetsDetails,
+      setFinalPos,
+      COL_WIDTH,
+      ROW_HEIGHT
+    );
   };
 
   useEffect(() => {
     if (draggedItem) {
-      window.addEventListener("mousemove", mouseMove);
-      window.addEventListener("mouseup", mouseUp);
-    } else {
-      window.removeEventListener("mousemove", mouseMove);
-      window.removeEventListener("mouseup", mouseUp);
+      window.addEventListener("mousemove", handleMouseMove);
     }
-
+    let handleMouseUp: (e: MouseEvent) => void;
+    if (draggedItem && finalPos) {
+      handleMouseUp = () => {
+        console.log(finalPos);
+        mouseUp(finalPos!, setDraggedItem, setFinalPos, setWidgetsDetails);
+      };
+      window.addEventListener("mouseup", handleMouseUp);
+    }
     return () => {
-      window.removeEventListener("mousemove", mouseMove);
-      window.removeEventListener("mouseup", mouseUp);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [draggedItem]);
+  }, [draggedItem, finalPos]);
 
   return (
-    <div
-      className={`w-full relative p-2`}
-      onMouseMove={(e) => {
-        console.log(`CursorX : ${e.clientX}\nCursorY : ${e.clientY}`);
-      }}
-    >
+    <div className={`w-full relative p-2`} ref={parentRef}>
       {widgetsDetails.map((widget) => (
         <div
-          onMouseDown={(e) => mouseDown(widget.id, e)}
           key={widget.id}
+          onMouseDown={(e) => handleMouseDown(e, widget.id)}
           style={{
-            width: widget.width,
-            height: widget.height,
-            transform: `translate(${widget.x}px,${widget.y}px)`,
+            width: widget.width * COL_WIDTH,
+            height: widget.height * ROW_HEIGHT,
+            transform: `translate(${widget.x * COL_WIDTH}px,${
+              widget.y * ROW_HEIGHT
+            }px)`,
+            zIndex: `${draggedItem ? "1" : "0"}`,
           }}
-          className="absolute bg-blue-100 inline-block m-2
-          cursor-grab hover:bg-blue-700 "
+          className="absolute bg-blue-100 inline-block 
+          cursor-grab "
         ></div>
       ))}
+      {finalPos && (
+        <div
+          style={{
+            width: finalPos.width,
+            height: finalPos.height,
+            transform: `translate(${finalPos.calculatedX * COL_WIDTH}px,${
+              finalPos.calculatedY * ROW_HEIGHT
+            }px)`,
+          }}
+          className="absolute bg-blue-400 inline-block 
+        cursor-grab z-[-1] opacity-50 "
+        ></div>
+      )}
     </div>
   );
 }
