@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DraggedItemType, WidgetDetailsType } from "./types";
+import { WidgetDetailsType } from "./types";
 import { pointerDown } from "./pointerDown";
 import { pointerMove } from "./pointerMove";
 import { pointerUp } from "./pointerUp";
@@ -14,7 +14,7 @@ const ROW_HEIGHT = 100;
 
 export default function DynamicGrid() {
   const parentRef = useRef<HTMLDivElement>(null);
-  const draggedItemRef = useRef<DraggedItemType>(null);
+  const draggedItemRef = useRef<WidgetDetailsType>(null);
   const finalPosRef = useRef<WidgetDetailsType>(null);
   const animationId = useRef<number>(null);
 
@@ -63,20 +63,16 @@ export default function DynamicGrid() {
         handlersRefs.current.handlePointUpRef
       );
     }
+    console.log("done")
   }, []);
 
   const handlePointerDown = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
-      if (!parentRef || !draggedItemRef) return;
-      pointerDown(
-        id,
-        e,
-        parentRef,
-        draggedItemRef,
-        setWidgetPlaceholder,
-        COL_WIDTH,
-        ROW_HEIGHT
-      );
+      if (draggedItemRef.current && !finalPosRef.current) return;
+
+      pointerDown(id, e, parentRef, draggedItemRef, COL_WIDTH, ROW_HEIGHT);
+
+      console.log(`${draggedItemRef.current} \t ${finalPosRef.current}`);
 
       if (handlersRefs.current) {
         window.addEventListener(

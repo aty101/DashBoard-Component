@@ -1,9 +1,9 @@
 import { RefObject } from "react";
-import { DraggedItemType, SetStateType, WidgetDetailsType } from "./types";
+import { SetStateType, WidgetDetailsType } from "./types";
 
 export const pointerMove = (
   e: PointerEvent,
-  draggedItemRef: RefObject<DraggedItemType | null>,
+  draggedItemRef: RefObject<WidgetDetailsType | null>,
   animationId: RefObject<number | null>,
   finalPosRef: RefObject<WidgetDetailsType | null>,
   setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>,
@@ -14,20 +14,22 @@ export const pointerMove = (
   if (!draggedItemRef.current) return;
   const current = draggedItemRef.current;
 
-  const newX = (e.clientX - current.offsetX) / COL_WIDTH;
-  const newY = (e.clientY - current.offsetY) / ROW_HEIGHT;
+  const newX = (e.clientX - current.x) / COL_WIDTH;
+  const newY = (e.clientY - current.y) / ROW_HEIGHT;
 
   const finalPosX = Math.round(newX);
   const finalPosY = Math.round(newY);
 
-  setWidgetPlaceholder((prev) => {
-    if (!prev) return null;
-    const newVal = { ...prev, x: finalPosX, y: finalPosY };
-    if (finalPosRef.current) {
-      finalPosRef.current = newVal;
-    }
-    return newVal;
-  });
+  const placeHolder = {
+    ...draggedItemRef.current,
+    x: finalPosX,
+    y: finalPosY,
+  };
+
+  if (finalPosRef) {
+    finalPosRef.current = placeHolder;
+  }
+  setWidgetPlaceholder(placeHolder);
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
       setWidgetsDetails((prev) => {
