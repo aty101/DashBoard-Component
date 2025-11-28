@@ -1,0 +1,47 @@
+import { RefObject } from "react";
+import { DraggedItemType, SetStateType, WidgetDetailsType } from "./types";
+
+export const pointerMove = (
+  e: PointerEvent,
+  draggedItemRef: RefObject<DraggedItemType | null>,
+  animationId: RefObject<number | null>,
+  finalPosRef: RefObject<WidgetDetailsType | null>,
+  setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>,
+  setWidgetsDetails: SetStateType<WidgetDetailsType[]>,
+  COL_WIDTH: number,
+  ROW_HEIGHT: number
+) => {
+  if (!draggedItemRef.current) return;
+  const current = draggedItemRef.current;
+
+  const newX = (e.clientX - current.offsetX) / COL_WIDTH;
+  const newY = (e.clientY - current.offsetY) / ROW_HEIGHT;
+
+  const finalPosX = Math.round(newX);
+  const finalPosY = Math.round(newY);
+
+  setWidgetPlaceholder((prev) => {
+    if (!prev) return null;
+    const newVal = { ...prev, x: finalPosX, y: finalPosY };
+    if (finalPosRef.current) {
+      finalPosRef.current = newVal;
+    }
+    return newVal;
+  });
+  if (!animationId.current) {
+    animationId.current = requestAnimationFrame(() => {
+      setWidgetsDetails((prev) => {
+        return prev.map((widget) => {
+          if (widget.id != draggedItemRef.current?.id) return widget;
+
+          return {
+            ...widget,
+            x: newX,
+            y: newY,
+          };
+        });
+      });
+      animationId.current = null;
+    });
+  }
+};
