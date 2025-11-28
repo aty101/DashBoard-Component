@@ -1,20 +1,20 @@
+import { RefObject } from "react";
 import { DragPos, FinalPos, SetStateType, WidgetDetail } from "./types";
 
 export const mouseMove = (
   e: MouseEvent,
-  draggedItem: DragPos,
+  draggedItemRef: RefObject<DragPos | null>,
   setWidgetsDetails: SetStateType<WidgetDetail[]>,
   setFinalPos: SetStateType<FinalPos | null>,
   COL_WIDTH: number,
   ROW_HEIGHT: number
 ) => {
-  if (!draggedItem) return;
-
-  const newX = (e.clientX / COL_WIDTH) - draggedItem.offsetX ;
-  const newY = (e.clientY / ROW_HEIGHT) - draggedItem.offsetY;
+  const newX = (e.clientX - draggedItemRef.current!.offsetX) / COL_WIDTH;
+  const newY = (e.clientY - draggedItemRef.current!.offsetY) / ROW_HEIGHT;
   setWidgetsDetails((prev) =>
     prev.map((widget) => {
-      if (widget.id !== draggedItem.id) return widget;
+      if (!draggedItemRef.current) return widget;
+      if (widget.id !== draggedItemRef.current.id) return widget;
       return {
         ...widget,
         x: newX,

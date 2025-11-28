@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
-export type WidgetDetail = {
+export type WidgetDetailsType = {
   id: number;
   x: number;
   y: number;
@@ -8,17 +8,11 @@ export type WidgetDetail = {
   height: number;
 };
 
-export type DragPos = {
-  id?: number;
+export type DraggedItemType = {
+  id: number;
   offsetX: number;
   offsetY: number;
 };
-export type FinalPos = {
-  id: number;
-  width: number;
-  height: number;
-  calculatedX: number;
-  calculatedY: number;
-};
+
 
 export type SetStateType<T> = Dispatch<SetStateAction<T>>;

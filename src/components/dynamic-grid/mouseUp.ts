@@ -1,8 +1,9 @@
+import { RefObject } from "react";
 import { DragPos, FinalPos, SetStateType, WidgetDetail } from "./types";
 
 export const mouseUp = (
   finalPos: FinalPos,
-  setDraggedItem: SetStateType<DragPos | null>,
+  draggedItemRef: RefObject<DragPos | null>,
   setFinalPos: SetStateType<FinalPos | null>,
   setWidgetsDetails: SetStateType<WidgetDetail[]>
 ) => {
@@ -17,6 +18,6 @@ export const mouseUp = (
       };
     })
   );
-  setDraggedItem(null);
+  draggedItemRef.current = null;
   setFinalPos(null);
 };
