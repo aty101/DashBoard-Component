@@ -6,6 +6,7 @@ export const pointerMove = (
   draggedItemRef: RefObject<WidgetDetailsType | null>,
   animationId: RefObject<number | null>,
   finalPosRef: RefObject<WidgetDetailsType | null>,
+  widgets: RefObject<WidgetDetailsType[]>,
   setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>,
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>,
   COL_WIDTH: number,
@@ -33,7 +34,7 @@ export const pointerMove = (
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
       setWidgetsDetails((prev) => {
-        return prev.map((widget) => {
+        const newWidgets = prev.map((widget) => {
           if (widget.id != draggedItemRef.current?.id) return widget;
 
           return {
@@ -42,6 +43,8 @@ export const pointerMove = (
             y: newY,
           };
         });
+
+        return newWidgets;
       });
       animationId.current = null;
     });

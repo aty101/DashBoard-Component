@@ -2,6 +2,7 @@ import { RefObject } from "react";
 import { SetStateType, WidgetDetailsType } from "./types";
 
 export const pointerUp = (
+
   draggedItemRef: RefObject<WidgetDetailsType | null>,
   finalPosRef: RefObject<WidgetDetailsType | null>,
   animationId: RefObject<number | null>,

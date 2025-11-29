@@ -6,11 +6,12 @@ export const pointerDown = (
   e: React.PointerEvent<HTMLElement>,
   parentRef: RefObject<HTMLDivElement | null>,
   draggedItemRef: RefObject<WidgetDetailsType | null>,
-
   COL_WIDTH: number,
-  ROW_HEIGHT: number
+  ROW_HEIGHT: number,
+ 
 ) => {
   e.currentTarget.setPointerCapture(e.pointerId);
+
   const widgetRect = e.currentTarget.getBoundingClientRect();
   const parentRect = parentRef.current?.getBoundingClientRect();
 

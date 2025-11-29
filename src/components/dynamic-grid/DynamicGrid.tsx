@@ -5,7 +5,6 @@ import { pointerDown } from "./pointerDown";
 import { pointerMove } from "./pointerMove";
 import { pointerUp } from "./pointerUp";
 
-import { createPortal } from "react-dom";
 import { StableDataSection } from "./DataSection";
 
 const COL_NUM = 12;
@@ -18,6 +17,8 @@ export default function DynamicGrid() {
   const finalPosRef = useRef<WidgetDetailsType>(null);
   const animationId = useRef<number>(null);
 
+
+
   const handlersRefs = useRef<{
     handlePointerMoveRef: (e: PointerEvent) => void;
     handlePointUpRef: () => void;
@@ -25,10 +26,11 @@ export default function DynamicGrid() {
 
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
     { id: 1, x: 0, y: 0, width: 2, height: 2 },
-    { id: 2, x: 1, y: 0, width: 2, height: 2 },
-    { id: 3, x: 2, y: 2, width: 2, height: 2 },
+    { id: 2, x: 3, y: 0, width: 2, height: 2 },
+    { id: 3, x: 2, y: 3, width: 2, height: 2 },
     // { id: 4, x: 3, y: 3, width: 200, height: 200 },
   ]);
+  const widgets = useRef<WidgetDetailsType[]>(widgetsDetails);
   const [widgetPlaceholder, setWidgetPlaceholder] =
     useState<WidgetDetailsType | null>(null);
 
@@ -38,11 +40,13 @@ export default function DynamicGrid() {
       draggedItemRef,
       animationId,
       finalPosRef,
+      widgets,
       setWidgetPlaceholder,
       setWidgetsDetails,
       COL_WIDTH,
       ROW_HEIGHT
     );
+   
   }, []);
 
   const handlePointerUp = useCallback(() => {
@@ -63,16 +67,16 @@ export default function DynamicGrid() {
         handlersRefs.current.handlePointUpRef
       );
     }
-    console.log("done")
   }, []);
 
   const handlePointerDown = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
-      if (draggedItemRef.current && !finalPosRef.current) return;
+     
+  
+
+      if (draggedItemRef.current) return;
 
       pointerDown(id, e, parentRef, draggedItemRef, COL_WIDTH, ROW_HEIGHT);
-
-      console.log(`${draggedItemRef.current} \t ${finalPosRef.current}`);
 
       if (handlersRefs.current) {
         window.addEventListener(
