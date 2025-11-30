@@ -1,11 +1,10 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { WidgetDetailsType } from "./types";
-import { pointerDown } from "./pointerDown";
-import { pointerMove } from "./pointerMove";
-import { pointerUp } from "./pointerUp";
+import { HandlersRefs, WidgetDetailsType } from "./types";
+import { pointerDown, pointerMove, pointerUp } from "./pointerHandlers";
 
 import { StableDataSection } from "./DataSection";
+import { resize } from "./resizeHandlers";
 
 const COL_NUM = 12;
 const COL_WIDTH = 100;
@@ -17,66 +16,34 @@ export default function DynamicGrid() {
   const finalPosRef = useRef<WidgetDetailsType>(null);
   const animationId = useRef<number>(null);
 
-
-
-  const handlersRefs = useRef<{
-    handlePointerMoveRef: (e: PointerEvent) => void;
-    handlePointUpRef: () => void;
-  }>(null);
+  const handlersRefs = useRef<HandlersRefs>(null);
 
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
     { id: 1, x: 0, y: 0, width: 2, height: 2 },
     { id: 2, x: 3, y: 0, width: 2, height: 2 },
-    { id: 3, x: 2, y: 3, width: 2, height: 2 },
-    // { id: 4, x: 3, y: 3, width: 200, height: 200 },
+    { id: 3, x: 0, y: 3, width: 2, height: 2 },
+    { id: 4, x: 3, y: 3, width: 2, height: 2 },
   ]);
-  const widgets = useRef<WidgetDetailsType[]>(widgetsDetails);
+
   const [widgetPlaceholder, setWidgetPlaceholder] =
     useState<WidgetDetailsType | null>(null);
 
-  const handlePointerMove = useCallback((e: PointerEvent) => {
-    pointerMove(
-      e,
-      draggedItemRef,
-      animationId,
-      finalPosRef,
-      widgets,
-      setWidgetPlaceholder,
-      setWidgetsDetails,
-      COL_WIDTH,
-      ROW_HEIGHT
-    );
-   
+  const handleResize = useCallback((e: PointerEvent) => {
+    resize({ e, draggedItemRef, setWidgetsDetails, COL_WIDTH, ROW_HEIGHT });
   }, []);
-
-  const handlePointerUp = useCallback(() => {
-    pointerUp(
-      draggedItemRef,
-      finalPosRef,
-      animationId,
-      setWidgetsDetails,
-      setWidgetPlaceholder
-    );
-    if (handlersRefs.current) {
-      window.removeEventListener(
-        "pointermove",
-        handlersRefs.current.handlePointerMoveRef
-      );
-      window.removeEventListener(
-        "pointerup",
-        handlersRefs.current.handlePointUpRef
-      );
-    }
-  }, []);
+  const handleResizeStart = useCallback(
+    (id: number, e: React.PointerEvent<HTMLElement>) => {
+      pointerDown({ id, e, parentRef, draggedItemRef, COL_WIDTH, ROW_HEIGHT });
+      window.addEventListener("pointermove", handleResize);
+    },
+    [handleResize]
+  );
 
   const handlePointerDown = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
-     
-  
-
       if (draggedItemRef.current) return;
 
-      pointerDown(id, e, parentRef, draggedItemRef, COL_WIDTH, ROW_HEIGHT);
+      pointerDown({ id, e, parentRef, draggedItemRef, COL_WIDTH, ROW_HEIGHT });
 
       if (handlersRefs.current) {
         window.addEventListener(
@@ -91,6 +58,39 @@ export default function DynamicGrid() {
     },
     []
   );
+
+  const handlePointerMove = useCallback((e: PointerEvent) => {
+    pointerMove({
+      e,
+      draggedItemRef,
+      animationId,
+      finalPosRef,
+      setWidgetPlaceholder,
+      setWidgetsDetails,
+      COL_WIDTH,
+      ROW_HEIGHT,
+    });
+  }, []);
+
+  const handlePointerUp = useCallback(() => {
+    pointerUp({
+      draggedItemRef,
+      finalPosRef,
+      animationId,
+      setWidgetsDetails,
+      setWidgetPlaceholder,
+    });
+    if (handlersRefs.current) {
+      window.removeEventListener(
+        "pointermove",
+        handlersRefs.current.handlePointerMoveRef
+      );
+      window.removeEventListener(
+        "pointerup",
+        handlersRefs.current.handlePointUpRef
+      );
+    }
+  }, []);
 
   useEffect(() => {
     handlersRefs.current = {
@@ -111,6 +111,7 @@ export default function DynamicGrid() {
               COL_WIDTH={COL_WIDTH}
               ROW_HEIGHT={ROW_HEIGHT}
               isDragged={widget.id === widgetPlaceholder?.id}
+              handleResizeStart={handleResizeStart}
             />
           );
         })}
