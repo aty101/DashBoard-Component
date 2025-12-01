@@ -18,41 +18,26 @@ function DataSection({
 }) {
   return (
     <section
-      onPointerDown={(e) => handlePointerDown(widget.id, e)}
+      onPointerDown={(e) => {
+        handlePointerDown(widget.id, e);
+      }}
       style={{
         width: widget.width * COL_WIDTH,
         height: widget.height * ROW_HEIGHT,
         transform: `translate(${widget.x * COL_WIDTH}px, ${
           widget.y * ROW_HEIGHT
         }px)`,
-        zIndex: `${isDragged ? "1" : "0"}`,
+        zIndex: `${isDragged ? "2" : "0"}`,
+        cursor: `${isDragged ? "grabbing" : "grab"}`,
       }}
-      className="absolute bg-blue-100  cursor-grab flex justify-end items-end p-1"
+      className="absolute bg-blue-100  flex justify-end items-end p-1"
     >
-      <div className="w-full h-full relative z-2">
+      <div className="w-full h-full relative  ">
         <span
-          className="absolute border-t-2 border-l-2 top-0 left-0 border-black w-[17px] h-[17px]  cursor-nesw-resize"
+          className=" absolute border-b-2 border-r-2 bottom-0 right-0 border-black w-[17px] h-[17px] cursor-se-resize"
           onPointerDown={(e) => {
             e.stopPropagation();
             handleResizeStart(widget.id, e);
-          }}
-        ></span>
-        <span
-          className=" absolute border-t-2 border-r-2 top-0 right-0 border-black w-[17px] h-[17px]  cursor-nesw-resize"
-          onPointerDown={(e) => {
-            e.stopPropagation();
-          }}
-        ></span>
-        <span
-          className="absolute border-b-2 border-l-2 bottom-0 left-0 border-black w-[17px] h-[17px] cursor-nesw-resize"
-          onPointerDown={(e) => {
-            e.stopPropagation();
-          }}
-        ></span>
-        <span
-          className=" absolute border-b-2 border-r-2 bottom-0 right-0 border-black w-[17px] h-[17px] cursor-nesw-resize"
-          onPointerDown={(e) => {
-            e.stopPropagation();
           }}
         ></span>
       </div>
