@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 export type WidgetDetailsType = {
   id: number;
@@ -10,7 +10,7 @@ export type WidgetDetailsType = {
 
 
 
-export type HandlersRefs = {
+export type HandlersRefsType = {
   handleDragging: (e: PointerEvent) => void;
   handleDraggingEnd: () => void;
   handleResize: (e: PointerEvent) => void;

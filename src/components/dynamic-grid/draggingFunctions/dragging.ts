@@ -1,3 +1,4 @@
+import { siblingsCollision } from "../collisionFunctions/siblingsCollision";
 import { DraggingParams } from "./draggingFunctionsParams";
 
 export const dragging = ({
@@ -5,6 +6,7 @@ export const dragging = ({
   draggedItemRef,
   animationId,
   widgetPlaceHolderRef,
+  widgetsDetailsRef,
   setWidgetPlaceholder,
   setWidgetsDetails,
   currentWidgetRef,
@@ -34,6 +36,7 @@ export const dragging = ({
   setWidgetPlaceholder(widgetPlaceHolder);
 
   if (!animationId.current) {
+    siblingsCollision({widgetPlaceHolderRef,widgetsDetailsRef,setWidgetsDetails})
     animationId.current = requestAnimationFrame(() => {
       setWidgetsDetails((prev) => {
         const newWidgets = prev.map((widget) => {

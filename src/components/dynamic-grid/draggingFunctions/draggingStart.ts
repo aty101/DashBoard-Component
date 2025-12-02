@@ -16,20 +16,20 @@ export const draggingStart = ({
   const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0);
   const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0);
 
+  const currentWidget = currentWidgetRef.current!
+
   draggedItemRef.current = {
     id,
     offsetX,
     offsetY,
   };
 
-  const widgetDetails = currentWidgetRef.current!;
-
   setWidgetPlaceholder({
-    id: widgetDetails.id,
-    width: widgetDetails.width,
-    height: widgetDetails.height,
-    x: widgetDetails.x,
-    y: widgetDetails.y,
+    id: currentWidget.id,
+    width: currentWidget.width,
+    height: currentWidget.height,
+    x: currentWidget.x,
+    y: currentWidget.y,
   });
 
   if (handlersRefs.current) {

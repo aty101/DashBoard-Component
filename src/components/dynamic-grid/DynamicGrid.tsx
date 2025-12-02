@@ -1,42 +1,63 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { HandlersRefs, WidgetDetailsType } from "./types";
+import { HandlersRefsType, WidgetDetailsType } from "./types";
 import { StableDataSection } from "./DataSection";
-import { resize, resizeEnd, resizeStart } from "./resizeHandlers";
 import { draggingStart } from "./draggingFunctions/draggingStart";
 import { dragging } from "./draggingFunctions/dragging";
 import { draggingEnd } from "./draggingFunctions/draggingEnd";
 import { DraggingOffsetsObject } from "./draggingFunctions/draggingFunctionsParams";
+import { resizeStart } from "./resizingFunctions/resizingStart";
+import { resize } from "./resizingFunctions/resizing";
+import { resizeEnd } from "./resizingFunctions/resizingEnd";
+import { siblingsCollision } from "./collisionFunctions/siblingsCollision";
 
 const COL_WIDTH = 100;
 const ROW_HEIGHT = 100;
 
 export default function DynamicGrid() {
-  const draggedItemRef = useRef<DraggingOffsetsObject>(null);
-  const resizedItemRef = useRef<WidgetDetailsType>(null);
-  const currentWidgetRef = useRef<WidgetDetailsType>(null);
-  const widgetPlaceHolderRef = useRef<WidgetDetailsType>(null);
-  const animationId = useRef<number>(null);
+  /* ...STATES DECLARATION... */
 
-  const handlersRefs = useRef<HandlersRefs>(null);
-
+  // Widgets state
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
     { id: 1, x: 0, y: 0, width: 2, height: 2 },
-    { id: 2, x: 3, y: 0, width: 2, height: 2 },
-    { id: 3, x: 0, y: 3, width: 2, height: 2 },
-    { id: 4, x: 3, y: 3, width: 2, height: 2 },
+    { id: 2, x: 2, y: 0, width: 2, height: 2 },
+    { id: 3, x: 0, y: 2, width: 2, height: 2 },
+    { id: 4, x: 2, y: 3, width: 2, height: 2 },
   ]);
-  const widgetsDetailsRef = useRef<WidgetDetailsType[]>(widgetsDetails);
 
-  useEffect(() => {
-    widgetsDetailsRef.current = widgetsDetails;
-  }, [widgetsDetails]);
-
+  // Current active widget placeholder and final position
   const [widgetPlaceholder, setWidgetPlaceholder] =
     useState<WidgetDetailsType | null>(null);
 
+  /* ...REFS DECLARATION... */
+
+  // Dragging initial cursor offset object
+  const draggedItemRef = useRef<DraggingOffsetsObject>(null);
+
+  // Resizing initial dimensions and cursor global start position
+  const resizedItemRef = useRef<WidgetDetailsType>(null);
+
+  // Current active widget details
+  const currentWidgetRef = useRef<WidgetDetailsType>(null);
+
+  // Current active widget placeholder details
+  const widgetPlaceHolderRef = useRef<WidgetDetailsType>(null);
+
+  // Animation id used to handle big states setters
+  const animationId = useRef<number>(null);
+
+  // Pointer move and pointer up handleres memory location
+  const handlersRefs = useRef<HandlersRefsType>(null);
+
+  // Widget details ref used instead of the state in callbacks
+  const widgetsDetailsRef = useRef<WidgetDetailsType[]>(widgetsDetails);
+
   const handleResizeStart = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
+      currentWidgetRef.current = widgetsDetailsRef.current.find(
+        (w) => w.id == id
+      )!;
+
       resizeStart({
         id,
         e,
@@ -44,23 +65,14 @@ export default function DynamicGrid() {
         widgetPlaceHolderRef,
         COL_WIDTH,
         ROW_HEIGHT,
-        widgetsDetails,
+        currentWidgetRef,
+        handlersRefs,
       });
-
-      if (handlersRefs.current) {
-        window.addEventListener(
-          "pointermove",
-          handlersRefs.current.handleResize
-        );
-        window.addEventListener(
-          "pointerup",
-          handlersRefs.current.handleResizeEnd
-        );
-      }
     },
-    [widgetsDetails]
+    []
   );
   const handleResize = useCallback((e: PointerEvent) => {
+    if (!resizedItemRef) return;
     resize({
       e,
       resizedItemRef,
@@ -79,17 +91,8 @@ export default function DynamicGrid() {
       animationId,
       setWidgetPlaceholder,
       setWidgetsDetails,
+      handlersRefs,
     });
-    if (handlersRefs.current) {
-      window.removeEventListener(
-        "pointermove",
-        handlersRefs.current.handleResize
-      );
-      window.removeEventListener(
-        "pointerup",
-        handlersRefs.current.handleResizeEnd
-      );
-    }
   }, []);
 
   /* ...DRAGGING HANDLERS... */
@@ -99,8 +102,9 @@ export default function DynamicGrid() {
     (id: number, e: React.PointerEvent<HTMLElement>) => {
       if (draggedItemRef.current) return;
 
-      currentWidgetRef.current =
-        widgetsDetailsRef.current.find((w) => w.id === id) ?? null;
+      currentWidgetRef.current = widgetsDetailsRef.current.find(
+        (w) => w.id === id
+      )!;
 
       draggingStart({
         id,
@@ -127,6 +131,11 @@ export default function DynamicGrid() {
       COL_WIDTH,
       ROW_HEIGHT,
     });
+    siblingsCollision({
+      widgetPlaceHolderRef,
+      widgetsDetailsRef,
+      setWidgetsDetails,
+    });
   }, []);
 
   // Handle (the resset of used refs and states, remove eventlisteners)
@@ -141,7 +150,9 @@ export default function DynamicGrid() {
     });
   }, []);
 
-  /* ...CAPTURE CALLBACKS MEMORY LOCATIONS... */
+  /* ...EFFECT TO CAPTURE  MEMORY LOCATIONS AND STATES CHANGES... */
+
+  // Track callbacks memory allocation
   useEffect(() => {
     handlersRefs.current = {
       handleDragging,
@@ -150,6 +161,11 @@ export default function DynamicGrid() {
       handleResizeEnd,
     };
   }, [handleDragging, handleDraggingEnd, handleResize, handleResizeEnd]);
+
+  // Track widgets detailes state change
+  useEffect(() => {
+    widgetsDetailsRef.current = widgetsDetails;
+  }, [widgetsDetails]);
 
   return (
     <>
