@@ -45,4 +45,4 @@ function DataSection({
   );
 }
 
-export const StableDataSection = React.memo(DataSection);
+export const StableDataSection = DataSection;

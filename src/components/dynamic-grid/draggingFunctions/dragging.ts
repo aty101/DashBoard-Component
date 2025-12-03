@@ -1,4 +1,4 @@
-import { siblingsCollision } from "../collisionFunctions/siblingsCollision";
+
 import { DraggingParams } from "./draggingFunctionsParams";
 
 export const dragging = ({
@@ -36,21 +36,18 @@ export const dragging = ({
   setWidgetPlaceholder(widgetPlaceHolder);
 
   if (!animationId.current) {
-    siblingsCollision({widgetPlaceHolderRef,widgetsDetailsRef,setWidgetsDetails})
     animationId.current = requestAnimationFrame(() => {
-      setWidgetsDetails((prev) => {
-        const newWidgets = prev.map((widget) => {
-          if (widget.id != currentWidget.id) return widget;
+      widgetsDetailsRef.current = widgetsDetailsRef.current.map((widget) => {
+        if (widget.id != currentWidget.id) return widget;
 
-          return {
-            ...widget,
-            x: newX,
-            y: newY,
-          };
-        });
-
-        return newWidgets;
+        return {
+          ...widget,
+          x: newX,
+          y: newY,
+        };
       });
+      // siblingsCollision({ widgetPlaceHolderRef, widgetsDetailsRef });
+      setWidgetsDetails([...widgetsDetailsRef.current]);
       animationId.current = null;
     });
   }

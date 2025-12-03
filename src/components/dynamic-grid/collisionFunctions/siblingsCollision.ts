@@ -31,33 +31,35 @@ function widgetsOverlap(a: WidgetDetailsType, b: WidgetDetailsType): boolean {
 }
 
 function resolve(widgets: WidgetDetailsType[], moved: WidgetDetailsType) {
-  let i = 0;
+  let hasCollision = true;
 
-  while (i < widgets.length) {
-    const w = widgets[i];
+  while (hasCollision) {
+    hasCollision = false;
 
-    if (w.id !== moved.id && widgetsOverlap(moved, w)) {
-      w.y = moved.y + moved.height;
-      moved = w; // continue down the chain
-      i = 0; // restart scan
-      continue;
+    for (let i = 0; i < widgets.length; i++) {
+      const w = widgets[i];
+
+      if (w.id !== moved.id && widgetsOverlap(moved, w)) {
+        console.log(w.id)
+        // Push widget 'w' down
+        w.y = moved.y + moved.height;
+
+        // Now the widget 'w' might cause more collisions, so update moved pointer
+        moved = w;
+
+        hasCollision = true;
+
+        // Break to restart the scan from beginning to catch all overlaps
+        break;
+      }
     }
-
-    i++;
   }
-
 }
 
 export const siblingsCollision = ({
   widgetPlaceHolderRef,
   widgetsDetailsRef,
-  setWidgetsDetails,
 }: siblingsCollisionParams) => {
   if (!widgetPlaceHolderRef.current) return;
- resolve(
-    widgetsDetailsRef.current,
-    widgetPlaceHolderRef.current
-  );
-
-  setWidgetsDetails(widgetsDetailsRef.current);
+  resolve(widgetsDetailsRef.current, widgetPlaceHolderRef.current);
 };

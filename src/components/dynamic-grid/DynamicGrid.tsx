@@ -22,7 +22,7 @@ export default function DynamicGrid() {
     { id: 1, x: 0, y: 0, width: 2, height: 2 },
     { id: 2, x: 2, y: 0, width: 2, height: 2 },
     { id: 3, x: 0, y: 2, width: 2, height: 2 },
-    { id: 4, x: 2, y: 3, width: 2, height: 2 },
+    { id: 4, x: 2, y: 2, width: 2, height: 2 },
   ]);
 
   // Current active widget placeholder and final position
@@ -124,17 +124,13 @@ export default function DynamicGrid() {
       e,
       draggedItemRef,
       currentWidgetRef,
+      widgetsDetailsRef,
       animationId,
       widgetPlaceHolderRef,
       setWidgetPlaceholder,
       setWidgetsDetails,
       COL_WIDTH,
       ROW_HEIGHT,
-    });
-    siblingsCollision({
-      widgetPlaceHolderRef,
-      widgetsDetailsRef,
-      setWidgetsDetails,
     });
   }, []);
 
