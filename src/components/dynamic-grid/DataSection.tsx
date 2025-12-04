@@ -24,8 +24,8 @@ function DataSection({
       style={{
         width: widget.width * COL_WIDTH,
         height: widget.height * ROW_HEIGHT,
-        transform: `translate(${widget.x * COL_WIDTH}px, ${
-          widget.y * ROW_HEIGHT
+        transform: `translate(${widget.x * (COL_WIDTH )}px, ${
+          widget.y * (ROW_HEIGHT )
         }px)`,
         zIndex: `${isDragged ? "2" : "0"}`,
         cursor: `${isDragged ? "grabbing" : "grab"}`,

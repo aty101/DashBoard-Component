@@ -13,8 +13,8 @@ export const draggingStart = ({
   const widgetRect = e.currentTarget.getBoundingClientRect();
   const parentRect = e.currentTarget.parentElement?.getBoundingClientRect();
 
-  const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0);
-  const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0);
+  const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0) + 10;
+  const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0) + 10;
 
   const currentWidget = currentWidgetRef.current!
 

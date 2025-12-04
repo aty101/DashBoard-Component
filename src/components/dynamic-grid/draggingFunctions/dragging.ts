@@ -1,4 +1,5 @@
 
+import { COL_WIDTH, ROW_HEIGHT } from "../DynamicGrid";
 import { DraggingParams } from "./draggingFunctionsParams";
 
 export const dragging = ({
@@ -10,15 +11,20 @@ export const dragging = ({
   setWidgetPlaceholder,
   setWidgetsDetails,
   currentWidgetRef,
-  COL_WIDTH,
-  ROW_HEIGHT,
+  maxCols
 }: DraggingParams) => {
   if (!draggedItemRef.current) return;
   const offsets = draggedItemRef.current;
   const currentWidget = currentWidgetRef.current!;
 
-  const newX = (e.clientX - offsets.offsetX) / COL_WIDTH;
+  let newX =  (e.clientX - offsets.offsetX) / COL_WIDTH ;
   const newY = (e.clientY - offsets.offsetY) / ROW_HEIGHT;
+
+  if(newX < 0) {
+    newX = 0
+  }else if(newX > maxCols){
+    newX = maxCols 
+  }
 
   const finalPosX = Math.round(newX);
   const finalPosY = Math.round(newY);
