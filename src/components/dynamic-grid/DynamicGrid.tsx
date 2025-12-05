@@ -12,7 +12,7 @@ import { resizeEnd } from "./resizingFunctions/resizingEnd";
 
 export const COL_WIDTH = 100;
 export const ROW_HEIGHT = 100;
-export const GAP = 0;
+export const GAP = 10;
 
 export default function DynamicGrid() {
   /* ...STATES DECLARATION... */
@@ -54,7 +54,7 @@ export default function DynamicGrid() {
 
   // Widget details ref used instead of the state in callbacks
   const widgetsDetailsRef = useRef<WidgetDetailsType[]>(widgetsDetails);
-
+  
   const handleResizeStart = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
       currentWidgetRef.current = widgetsDetailsRef.current.find(
@@ -128,7 +128,7 @@ export default function DynamicGrid() {
       Math.floor(((parentRect?.width ?? 0) + GAP) / (COL_WIDTH + GAP)) - 1;
     const maxRows =
       Math.floor(((parentRect?.height ?? 0) + GAP) / (ROW_HEIGHT + GAP)) - 1;
-    console.log(maxCols);
+
     dragging({
       e,
       draggedItemRef,
@@ -175,7 +175,7 @@ export default function DynamicGrid() {
   return (
     <>
       <div
-        className={`max-w-full w-full relative  overflow-x-hidden`}
+        className={`max-w-full w-full relative overflow-x-hidden p-2`}
         ref={parentRef}
       >
         {widgetsDetails.map((widget) => {
@@ -198,8 +198,12 @@ export default function DynamicGrid() {
         {widgetPlaceholder && (
           <div
             style={{
-              width: widgetPlaceholder.width * COL_WIDTH,
-              height: widgetPlaceholder.height * ROW_HEIGHT,
+              width:
+                widgetPlaceholder.width * COL_WIDTH +
+                GAP * (widgetPlaceholder.width - 1),
+              height:
+                widgetPlaceholder.height * ROW_HEIGHT +
+                GAP * (widgetPlaceholder.height - 1),
               transform: `translate(${
                 widgetPlaceholder.x * (COL_WIDTH + GAP)
               }px,${widgetPlaceholder.y * (ROW_HEIGHT + GAP)}px)`,

@@ -23,9 +23,11 @@ function DataSection({
         handlePointerDown(widget.id, e);
       }}
       style={{
-        width: widget.width * COL_WIDTH,
-        height: widget.height * ROW_HEIGHT,
-        transform: `translate(${widget.x * (COL_WIDTH + GAP)}px, ${widget.y * (ROW_HEIGHT + GAP)}px)`,
+        width: widget.width * COL_WIDTH + GAP * (widget.width - 1),
+        height: widget.height * ROW_HEIGHT + GAP * (widget.height - 1),
+        transform: `translate(${widget.x * (COL_WIDTH + GAP)}px, ${
+          widget.y * (ROW_HEIGHT + GAP)
+        }px)`,
         zIndex: `${isDragged ? "2" : "0"}`,
         cursor: `${isDragged ? "grabbing" : "grab"}`,
       }}

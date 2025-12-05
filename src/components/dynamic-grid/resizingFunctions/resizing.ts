@@ -1,3 +1,4 @@
+import { GAP } from "../DynamicGrid";
 import { ResizingParams } from "./resizingFunctionsParams";
 
 export const resize = ({
@@ -9,49 +10,50 @@ export const resize = ({
   setWidgetPlaceholder,
   COL_WIDTH,
   ROW_HEIGHT,
-  
 }: ResizingParams) => {
   if (!resizedItemRef.current) return;
+
   const current = resizedItemRef.current;
 
-  const newWidth = Math.max(
-    (current.width + e.clientX - current.x) / COL_WIDTH,
-    2
-  );
-  const newHeight = Math.max(
-    (current.height + e.clientY - current.y) / ROW_HEIGHT,
-    1
-  );
+  // pixel size of the widget before resizing
+  const pixelWidthBefore =
+    current.width * COL_WIDTH + (current.width - 1) * GAP;
 
-  const finalPos = widgetPlaceHolderRef.current;
+  const pixelHeightBefore =
+    current.height * ROW_HEIGHT + (current.height - 1) * GAP;
 
-  if (finalPos) {
+  // mouse movement since resize start
+  const dx = e.clientX - current.x;
+  const dy = e.clientY - current.y;
+
+  // new pixel dimensions
+  const pixelWidth = pixelWidthBefore + dx;
+  const pixelHeight = pixelHeightBefore + dy;
+
+  // convert pixel → grid (🔥 no multipliers here)
+  const newWidth = Math.max((pixelWidth + GAP) / (COL_WIDTH + GAP), 2);
+
+  const newHeight = Math.max((pixelHeight + GAP) / (ROW_HEIGHT + GAP), 1);
+
+  // update placeholder
+  if (widgetPlaceHolderRef.current) {
     widgetPlaceHolderRef.current = {
-      ...finalPos,
+      ...widgetPlaceHolderRef.current,
       width: Math.round(newWidth),
       height: Math.round(newHeight),
     };
-    setWidgetPlaceholder({
-      ...finalPos,
-      width: Math.round(newWidth),
-      height: Math.round(newHeight),
-    });
+    setWidgetPlaceholder(widgetPlaceHolderRef.current);
   }
 
+  // throttled state update
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
       setWidgetsDetails((prev) =>
-        prev.map((widget) => {
-          if (widget.id === current.id) {
-            return {
-              ...widget,
-              width: newWidth,
-              height: newHeight,
-            };
-          } else {
-            return widget;
-          }
-        })
+        prev.map((widget) =>
+          widget.id === current.id
+            ? { ...widget, width: newWidth, height: newHeight }
+            : widget
+        )
       );
       animationId.current = null;
     });

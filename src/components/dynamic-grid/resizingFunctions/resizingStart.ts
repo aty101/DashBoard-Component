@@ -9,13 +9,12 @@ export const resizeStart = ({
   handlersRefs,
 }: ResizingStartParams) => {
   e.currentTarget.setPointerCapture(e.pointerId);
-  const rect = e.currentTarget.parentElement?.getBoundingClientRect();
 
   const currentWidget = currentWidgetRef.current!;
   resizedItemRef.current = {
     id,
-    width: rect!.width,
-    height: rect!.height,
+    width: currentWidget.width,
+    height: currentWidget.height,
     x: e.clientX,
     y: e.clientY,
   };
