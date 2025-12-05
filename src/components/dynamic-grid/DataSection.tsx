@@ -1,5 +1,6 @@
 import React from "react";
 import { WidgetDetailsType } from "./types";
+import { GAP } from "./DynamicGrid";
 
 function DataSection({
   widget,
@@ -24,9 +25,7 @@ function DataSection({
       style={{
         width: widget.width * COL_WIDTH,
         height: widget.height * ROW_HEIGHT,
-        transform: `translate(${widget.x * (COL_WIDTH )}px, ${
-          widget.y * (ROW_HEIGHT )
-        }px)`,
+        transform: `translate(${widget.x * (COL_WIDTH + GAP)}px, ${widget.y * (ROW_HEIGHT + GAP)}px)`,
         zIndex: `${isDragged ? "2" : "0"}`,
         cursor: `${isDragged ? "grabbing" : "grab"}`,
       }}

@@ -12,6 +12,7 @@ import { resizeEnd } from "./resizingFunctions/resizingEnd";
 
 export const COL_WIDTH = 100;
 export const ROW_HEIGHT = 100;
+export const GAP = 0;
 
 export default function DynamicGrid() {
   /* ...STATES DECLARATION... */
@@ -123,7 +124,10 @@ export default function DynamicGrid() {
   // Handle (detection of the cursor new position, setting placeholder and current widget to their new values)
   const handleDragging = useCallback((e: PointerEvent) => {
     const parentRect = parentRef.current?.getBoundingClientRect();
-    const maxCols = Math.floor((parentRect?.width ?? 0) / 125) - 1;
+    const maxCols =
+      Math.floor(((parentRect?.width ?? 0) + GAP) / (COL_WIDTH + GAP)) - 1;
+    const maxRows =
+      Math.floor(((parentRect?.height ?? 0) + GAP) / (ROW_HEIGHT + GAP)) - 1;
     console.log(maxCols);
     dragging({
       e,
@@ -135,6 +139,7 @@ export default function DynamicGrid() {
       setWidgetPlaceholder,
       setWidgetsDetails,
       maxCols,
+      maxRows,
     });
   }, []);
 
@@ -169,7 +174,10 @@ export default function DynamicGrid() {
 
   return (
     <>
-      <div className={`w-full relative p-2 `} ref={parentRef}>
+      <div
+        className={`max-w-full w-full relative  overflow-x-hidden`}
+        ref={parentRef}
+      >
         {widgetsDetails.map((widget) => {
           return (
             <StableDataSection
@@ -192,9 +200,9 @@ export default function DynamicGrid() {
             style={{
               width: widgetPlaceholder.width * COL_WIDTH,
               height: widgetPlaceholder.height * ROW_HEIGHT,
-              transform: `translate(${widgetPlaceholder.x * COL_WIDTH}px,${
-                widgetPlaceholder.y * ROW_HEIGHT
-              }px)`,
+              transform: `translate(${
+                widgetPlaceholder.x * (COL_WIDTH + GAP)
+              }px,${widgetPlaceholder.y * (ROW_HEIGHT + GAP)}px)`,
             }}
             className="absolute bg-blue-300 inline-block z-1 opacity-50
           cursor-grab"

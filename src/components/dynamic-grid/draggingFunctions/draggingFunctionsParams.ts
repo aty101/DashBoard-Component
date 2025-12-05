@@ -26,6 +26,7 @@ export type DraggingParams = {
   setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   maxCols: number;
+  maxRows : number;
 };
 
 export type DraggingEndParams = {
