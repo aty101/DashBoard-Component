@@ -1,20 +1,7 @@
 import { WidgetDetailsType } from "../types";
 import { siblingsCollisionParams } from "./collisionFunctionsParams";
 
-const calcWidgetBoundings = (widget: WidgetDetailsType) => {
-  const startX = widget.x;
-  const endX = widget.x + widget.width - 1;
 
-  const startY = widget.y;
-  const endY = widget.y + widget.height - 1;
-
-  return {
-    startX,
-    endX,
-    startY,
-    endY,
-  };
-};
 
 function widgetsOverlap(a: WidgetDetailsType, b: WidgetDetailsType): boolean {
   const aLeft = a.x;

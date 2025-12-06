@@ -6,6 +6,7 @@ export type WidgetDetailsType = {
   y: number;
   width: number;
   height: number;
+  content : string
 };
 
 

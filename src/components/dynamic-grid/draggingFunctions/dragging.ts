@@ -1,3 +1,4 @@
+import { siblingsCollision } from "../collisionFunctions/siblingsCollision";
 import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
 import { DraggingParams } from "./draggingFunctionsParams";
 
@@ -17,8 +18,8 @@ export const dragging = ({
   const offsets = draggedItemRef.current;
   const currentWidget = currentWidgetRef.current!;
 
-  let newX = (e.clientX - offsets.offsetX) / (COL_WIDTH + GAP);
-  let newY = (e.clientY - offsets.offsetY) / (ROW_HEIGHT + GAP);
+  const newX = (e.clientX - offsets.offsetX) / (COL_WIDTH + GAP);
+  const newY = (e.clientY - offsets.offsetY) / (ROW_HEIGHT + GAP);
 
   // if (newX < 0) {
   //   newX = 0;
@@ -59,7 +60,7 @@ export const dragging = ({
           y: newY,
         };
       });
-      // siblingsCollision({ widgetPlaceHolderRef, widgetsDetailsRef });
+      siblingsCollision({ widgetPlaceHolderRef, widgetsDetailsRef });
       setWidgetsDetails([...widgetsDetailsRef.current]);
       animationId.current = null;
     });

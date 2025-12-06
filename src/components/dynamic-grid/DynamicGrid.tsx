@@ -19,10 +19,10 @@ export default function DynamicGrid() {
 
   // Widgets state
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
-    { id: 1, x: 0, y: 0, width: 2, height: 2 },
-    { id: 2, x: 2, y: 0, width: 2, height: 2 },
-    { id: 3, x: 0, y: 2, width: 2, height: 2 },
-    { id: 4, x: 2, y: 2, width: 2, height: 2 },
+    { id: 1, x: 0, y: 0, width: 2, height: 2, content: "data1" },
+    { id: 2, x: 2, y: 0, width: 2, height: 2, content: "data2" },
+    { id: 3, x: 0, y: 2, width: 2, height: 2, content: "data3" },
+    { id: 4, x: 2, y: 2, width: 2, height: 2, content: "data4" },
   ]);
 
   // Current active widget placeholder and final position
@@ -54,7 +54,7 @@ export default function DynamicGrid() {
 
   // Widget details ref used instead of the state in callbacks
   const widgetsDetailsRef = useRef<WidgetDetailsType[]>(widgetsDetails);
-  
+
   const handleResizeStart = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
       currentWidgetRef.current = widgetsDetailsRef.current.find(
