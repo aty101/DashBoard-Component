@@ -30,6 +30,7 @@ export const draggingStart = ({
     height: currentWidget.height,
     x: currentWidget.x,
     y: currentWidget.y,
+    content : currentWidget.content
   });
 
   if (handlersRefs.current) {

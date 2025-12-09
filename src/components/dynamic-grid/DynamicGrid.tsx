@@ -55,6 +55,23 @@ export default function DynamicGrid() {
   // Widget details ref used instead of the state in callbacks
   const widgetsDetailsRef = useRef<WidgetDetailsType[]>(widgetsDetails);
 
+  useEffect(() => {
+    if (!parentRef.current) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+
+        console.log(`Width: ${width}\nHeight:${height}`);
+        // You can use this sizeRef.current anywhere else without causing re-render
+      }
+    });
+
+    resizeObserver.observe(parentRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
   const handleResizeStart = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
       currentWidgetRef.current = widgetsDetailsRef.current.find(

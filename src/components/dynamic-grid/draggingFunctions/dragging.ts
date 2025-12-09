@@ -1,3 +1,4 @@
+import { WidgetDetailsType } from "./../types";
 import { siblingsCollision } from "../collisionFunctions/siblingsCollision";
 import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
 import { DraggingParams } from "./draggingFunctionsParams";
@@ -32,17 +33,16 @@ export const dragging = ({
   //   newY = maxRows - (currentWidget.height - 1);
   // }
 
-
-
   const finalPosX = Math.round(newX);
   const finalPosY = Math.round(newY);
 
-  const widgetPlaceHolder = {
+  const widgetPlaceHolder: WidgetDetailsType = {
     id: currentWidget.id,
     x: finalPosX,
     y: finalPosY,
     width: currentWidget.width,
     height: currentWidget.height,
+    content: currentWidget.content,
   };
 
   widgetPlaceHolderRef.current = widgetPlaceHolder;
@@ -60,7 +60,7 @@ export const dragging = ({
           y: newY,
         };
       });
-      siblingsCollision({ widgetPlaceHolderRef, widgetsDetailsRef });
+
       setWidgetsDetails([...widgetsDetailsRef.current]);
       animationId.current = null;
     });
