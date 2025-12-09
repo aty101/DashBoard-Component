@@ -34,7 +34,9 @@ function DataSection({
       className="absolute bg-blue-100  flex justify-end items-end p-1"
     >
       <div className="w-full h-full relative  flex justify-center items-center">
-        <h2 className="text-3xl capitalize text-black select-none">{widget.content}</h2>
+        <h2 className="text-3xl capitalize text-black select-none">
+          {widget.content}
+        </h2>
         <span
           className=" absolute border-b-2 border-r-2 bottom-0 right-0 border-black w-[17px] h-[17px] cursor-se-resize"
           onPointerDown={(e) => {
@@ -47,4 +49,4 @@ function DataSection({
   );
 }
 
-export const StableDataSection = DataSection;
+export const StableDataSection = React.memo(DataSection);

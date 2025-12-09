@@ -55,22 +55,42 @@ export default function DynamicGrid() {
   // Widget details ref used instead of the state in callbacks
   const widgetsDetailsRef = useRef<WidgetDetailsType[]>(widgetsDetails);
 
+  const limitsRef = useRef({ maxCol: 0, maxRow: 0 });
+
+  const [limitsState, setLimitsState] = useState({ maxCol: 0, maxRow: 0 });
+
   useEffect(() => {
     if (!parentRef.current) return;
-
+    const parentStyles = window.getComputedStyle(parentRef.current);
     const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
+      const { width, height } = entries[0].contentRect;
 
-        console.log(`Width: ${width}\nHeight:${height}`);
-        // You can use this sizeRef.current anywhere else without causing re-render
-      }
+      const paddingLeft = parseInt(parentStyles.paddingLeft);
+      const paddingRight = parseInt(parentStyles.paddingRight);
+      const paddingTop = parseInt(parentStyles.paddingTop);
+      const paddingBottom = parseInt(parentStyles.paddingBottom);
+
+      const maxCol = Math.floor((width + GAP) / (COL_WIDTH + GAP)) - 1;
+      const maxRow = Math.floor((height + GAP) / (ROW_HEIGHT + GAP) - 1);
+      const newLimits = { maxCol, maxRow };
+      console.log( maxRow);
+
+      limitsRef.current = newLimits;
+
+      setLimitsState((prev) =>
+        prev.maxCol === newLimits.maxCol && prev.maxRow === newLimits.maxRow
+          ? prev
+          : newLimits
+      );
+      // You can use this sizeRef.current anywhere else without causing re-render
     });
 
     resizeObserver.observe(parentRef.current);
 
     return () => resizeObserver.disconnect();
   }, []);
+
+ 
 
   const handleResizeStart = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
