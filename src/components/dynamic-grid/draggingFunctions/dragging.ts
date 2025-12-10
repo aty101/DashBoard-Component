@@ -1,4 +1,4 @@
-import { WidgetDetailsType, WidgetPlaceHolderType } from "./../types";
+import { WidgetPlaceHolderType } from "./../types";
 import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
 import { DraggingParams } from "./draggingFunctionsParams";
 
@@ -23,15 +23,11 @@ export const dragging = ({
   const cursorX = (e.clientX - offsets.offsetX) / (COL_WIDTH + GAP);
   const cursorY = (e.clientY - offsets.offsetY) / (ROW_HEIGHT + GAP);
 
-  // Stop the drag to be out of the grid limits
-  const newX = Math.max(
-    0,
-    Math.min(cursorX, maxCols - (currentWidget.width - 1))
-  );
-  const newY = Math.max(
-    0,
-    Math.min(cursorY, maxRows - (currentWidget.height - 1))
-  );
+  // Check the drag limits
+  const maxX = maxCols - (currentWidget.width - 1);
+  const maxY = maxRows - (currentWidget.height - 1);
+  const newX = Math.max(0, Math.min(cursorX, maxX));
+  const newY = Math.max(0, Math.min(cursorY, maxY));
 
   // Assign the placeholder in a grid cell
   const finalPosX = Math.round(newX);

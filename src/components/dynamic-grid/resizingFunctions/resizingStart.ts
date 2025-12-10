@@ -1,33 +1,36 @@
+import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
 import { ResizingStartParams } from "./resizingFunctionsParams";
 
 export const resizeStart = ({
-  id,
   e,
   resizedItemRef,
-  widgetPlaceHolderRef,
   currentWidgetRef,
   handlersRefs,
 }: ResizingStartParams) => {
+  if (!currentWidgetRef.current) return;
+
+  // Capture the pointer so resize stays smooth even if the cursor leaves the element
   e.currentTarget.setPointerCapture(e.pointerId);
 
-  const currentWidget = currentWidgetRef.current!;
+  // Get current widget object
+  const currentWidget = currentWidgetRef.current;
+
+  // pixel size of the widget
+  const pixelWidth =
+    currentWidget.width * COL_WIDTH + (currentWidget.width - 1) * GAP;
+
+  const pixelHeight =
+    currentWidget.height * ROW_HEIGHT + (currentWidget.height - 1) * GAP;
+
+  // Store initial widget size and cursor position so we can calculate deltas during resize
   resizedItemRef.current = {
-    id,
-    width: currentWidget.width,
-    height: currentWidget.height,
+    width: pixelWidth,
+    height: pixelHeight,
     cursorGlobX: e.clientX,
     cursorGlobY: e.clientY,
   };
 
-  widgetPlaceHolderRef.current = {
-    id,
-    width: currentWidget.width,
-    height: currentWidget.height,
-    x: currentWidget.x,
-    y: currentWidget.y,
-    content: currentWidget.content,
-  };
-
+  // Add pointer global events
   if (handlersRefs.current) {
     window.addEventListener("pointermove", handlersRefs.current.handleResize);
     window.addEventListener("pointerup", handlersRefs.current.handleResizeEnd);

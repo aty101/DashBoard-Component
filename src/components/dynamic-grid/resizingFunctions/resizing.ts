@@ -14,51 +14,53 @@ export const resize = ({
 }: ResizingParams) => {
   if (!resizedItemRef.current || !currentWidgetRef.current) return;
 
-  const current = resizedItemRef.current;
-
-  // pixel size of the widget before resizing
-  const pixelWidthBefore =
-    current.width * COL_WIDTH + (current.width - 1) * GAP;
-
-  const pixelHeightBefore =
-    current.height * ROW_HEIGHT + (current.height - 1) * GAP;
+  const currentWidget = currentWidgetRef.current;
+  const initResizeData = resizedItemRef.current;
 
   // mouse movement since resize start
-  const dx = e.clientX - current.cursorGlobX;
-  const dy = e.clientY - current.cursorGlobY;
+  const dx = e.clientX - initResizeData.cursorGlobX;
+  const dy = e.clientY - initResizeData.cursorGlobY;
 
   // new pixel dimensions
-  const pixelWidth = pixelWidthBefore + dx;
-  const pixelHeight = pixelHeightBefore + dy;
+  const pixelWidth = initResizeData.width + dx;
+  const pixelHeight = initResizeData.height + dy;
 
-  // convert pixel → grid (🔥 no multipliers here)
-  let newWidth = Math.max((pixelWidth + GAP) / (COL_WIDTH + GAP), 2);
+  // convert pixel to grid
+  const gridWidth = (pixelWidth + GAP) / (COL_WIDTH + GAP);
+  const gridHeight = (pixelHeight + GAP) / (ROW_HEIGHT + GAP);
 
-  let newHeight = Math.max((pixelHeight + GAP) / (ROW_HEIGHT + GAP), 1);
+  // Check if the size didnt pass the min and max
+  const maxWidth = maxCols - (currentWidget.x - 1);
+  const maxHeight = maxRows - (currentWidget.y - 1);
+  const newWidth = Math.min(maxWidth, Math.max(gridWidth, 2));
+  const newHeight = Math.min(maxHeight, Math.max(gridHeight, 1));
 
-  if (currentWidgetRef.current.x + newWidth - 1 >= maxCols) {
-    newWidth = maxCols - (currentWidgetRef.current.x - 1);
-  }
-  if (currentWidgetRef.current.y + newHeight - 1 >= maxRows) {
-    newHeight = maxRows - (currentWidgetRef.current.y - 1);
-  }
+  // Placeholder current size
+  const finalWidth = Math.round(newWidth);
+  const finalHeight = Math.round(newHeight);
 
-  // update placeholder
-  if (widgetPlaceHolderRef.current) {
-    widgetPlaceHolderRef.current = {
-      ...widgetPlaceHolderRef.current,
-      width: Math.round(newWidth),
-      height: Math.round(newHeight),
-    };
-    setWidgetPlaceholder(widgetPlaceHolderRef.current);
-  }
+  // Set the new placeholder object
+  const placeholder = {
+    id: currentWidget.id,
+    x: currentWidget.x,
+    y: currentWidget.y,
+    width: finalWidth,
+    height: finalHeight,
+  };
 
-  // throttled state update
+  // Set the placeholder ref to be used in the end of resize
+  widgetPlaceHolderRef.current = placeholder;
+
+  // throttled states update
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
+      // Change placeholder in ui
+      setWidgetPlaceholder(placeholder);
+
+      // Change the current active widget
       setWidgetsDetails((prev) =>
         prev.map((widget) =>
-          widget.id === current.id
+          widget.id === currentWidget.id
             ? { ...widget, width: newWidth, height: newHeight }
             : widget
         )

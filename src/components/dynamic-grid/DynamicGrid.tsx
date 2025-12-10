@@ -66,19 +66,13 @@ export default function DynamicGrid() {
 
   useEffect(() => {
     if (!parentRef.current) return;
-    const parentStyles = window.getComputedStyle(parentRef.current);
+
     const resizeObserver = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
-
-      const paddingLeft = parseInt(parentStyles.paddingLeft);
-      const paddingRight = parseInt(parentStyles.paddingRight);
-      const paddingTop = parseInt(parentStyles.paddingTop);
-      const paddingBottom = parseInt(parentStyles.paddingBottom);
 
       const maxCol = Math.floor((width + GAP) / (COL_WIDTH + GAP)) - 1;
       const maxRow = Math.floor((height + GAP) / (ROW_HEIGHT + GAP) - 1);
       const newLimits = { maxCol, maxRow };
-      console.log(maxRow);
 
       limitsRef.current = newLimits;
 
@@ -95,49 +89,45 @@ export default function DynamicGrid() {
     return () => resizeObserver.disconnect();
   }, []);
 
-  // const handleResizeStart = useCallback(
-  //   (id: number, e: React.PointerEvent<HTMLElement>) => {
-  //     currentWidgetRef.current = widgetsDetailsRef.current.find(
-  //       (w) => w.id == id
-  //     )!;
+  const handleResizeStart = useCallback(
+    (id: number, e: React.PointerEvent<HTMLElement>) => {
+      currentWidgetRef.current = widgetsDetailsRef.current.find(
+        (w) => w.id == id
+      )!;
 
-  //     resizeStart({
-  //       id,
-  //       e,
-  //       resizedItemRef,
-  //       widgetPlaceHolderRef,
-  //       COL_WIDTH,
-  //       ROW_HEIGHT,
-  //       currentWidgetRef,
-  //       handlersRefs,
-  //     });
-  //   },
-  //   []
-  // );
-  // const handleResize = useCallback((e: PointerEvent) => {
-  //   if (!resizedItemRef) return;
-  //   resize({
-  //     e,
-  //     resizedItemRef,
-  //     setWidgetsDetails,
-  //     currentWidgetRef,
-  //     maxCols:limitsRef.current.maxCol,
-  //     maxRows:limitsRef.current.maxRow,
-  //     widgetPlaceHolderRef,
-  //     setWidgetPlaceholder,
-  //     animationId,
-  //   });
-  // }, []);
-  // const handleResizeEnd = useCallback(() => {
-  //   resizeEnd({
-  //     resizedItemRef,
-  //     widgetPlaceHolderRef,
-  //     animationId,
-  //     setWidgetPlaceholder,
-  //     setWidgetsDetails,
-  //     handlersRefs,
-  //   });
-  // }, []);
+      resizeStart({
+        e,
+        resizedItemRef,
+        currentWidgetRef,
+        handlersRefs,
+      });
+    },
+    []
+  );
+  const handleResize = useCallback((e: PointerEvent) => {
+    if (!resizedItemRef) return;
+    resize({
+      e,
+      resizedItemRef,
+      setWidgetsDetails,
+      currentWidgetRef,
+      maxCols: limitsRef.current.maxCol,
+      maxRows: limitsRef.current.maxRow,
+      widgetPlaceHolderRef,
+      setWidgetPlaceholder,
+      animationId,
+    });
+  }, []);
+  const handleResizeEnd = useCallback(() => {
+    resizeEnd({
+      resizedItemRef,
+      widgetPlaceHolderRef,
+      animationId,
+      setWidgetPlaceholder,
+      setWidgetsDetails,
+      handlersRefs,
+    });
+  }, []);
 
   /* ...DRAGGING HANDLERS... */
 
@@ -151,7 +141,6 @@ export default function DynamicGrid() {
       )!;
 
       draggingStart({
-        id,
         e,
         draggingOffsetsRef,
         handlersRefs,
@@ -194,10 +183,10 @@ export default function DynamicGrid() {
     handlersRefs.current = {
       handleDragging,
       handleDraggingEnd,
-      // handleResize,
-      // handleResizeEnd,
+      handleResize,
+      handleResizeEnd,
     };
-  }, [handleDragging, handleDraggingEnd]);
+  }, [handleDragging, handleDraggingEnd, handleResize, handleResizeEnd]);
 
   // Track widgets detailes state change
   useEffect(() => {
@@ -216,14 +205,12 @@ export default function DynamicGrid() {
               key={widget.id}
               widget={widget}
               handlePointerDown={handleDraggingStart}
-              COL_WIDTH={COL_WIDTH}
-              ROW_HEIGHT={ROW_HEIGHT}
               isDragged={
                 widget.id === widgetPlaceholder?.id &&
                 (widget.x != widgetPlaceholder.x ||
                   widget.y != widgetPlaceholder.y)
               }
-              // handleResizeStart={handleResizeStart}
+              handleResizeStart={handleResizeStart}
             />
           );
         })}

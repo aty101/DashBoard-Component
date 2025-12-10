@@ -1,15 +1,13 @@
 import { DraggingStartParams } from "./draggingFunctionsParams";
 
 export const draggingStart = ({
-  id,
   e,
   draggingOffsetsRef,
   handlersRefs,
 }: DraggingStartParams) => {
-
   // Set current pointer (avoid bugs)
   e.currentTarget.setPointerCapture(e.pointerId);
-  
+
   // Get widget bounds
   const widgetRect = e.currentTarget.getBoundingClientRect();
 
@@ -17,12 +15,12 @@ export const draggingStart = ({
   const parentRect = e.currentTarget.parentElement?.getBoundingClientRect();
 
   // Calc cursor offset from the widget for smooth drag
+  // (parentRect add to solve a glitch came of the parent shifted pos)
   const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0);
   const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0);
 
   // Set the cursor offset ref
   draggingOffsetsRef.current = {
-    id,
     offsetX,
     offsetY,
   };

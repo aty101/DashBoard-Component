@@ -20,8 +20,8 @@ export type WidgetPlaceHolderType = {
 export type HandlersRefsType = {
   handleDragging: (e: PointerEvent) => void;
   handleDraggingEnd: () => void;
-  // handleResize: (e: PointerEvent) => void;
-  // handleResizeEnd: () => void;
+  handleResize: (e: PointerEvent) => void;
+  handleResizeEnd: () => void;
 };
 
 export type SetStateType<T> = Dispatch<SetStateAction<T>>;

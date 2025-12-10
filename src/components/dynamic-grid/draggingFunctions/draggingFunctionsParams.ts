@@ -7,13 +7,11 @@ import {
 } from "../types";
 
 export type DraggingOffsetsObject = {
-  id: number;
   offsetX: number;
   offsetY: number;
 };
 
 export type DraggingStartParams = {
-  id: number;
   e: React.PointerEvent<HTMLElement>;
   draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
   handlersRefs: RefObject<HandlersRefsType | null>;
