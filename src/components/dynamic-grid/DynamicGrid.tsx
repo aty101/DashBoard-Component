@@ -1,6 +1,10 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { HandlersRefsType, WidgetDetailsType } from "./types";
+import {
+  HandlersRefsType,
+  WidgetDetailsType,
+  WidgetPlaceHolderType,
+} from "./types";
 import { StableDataSection } from "./DataSection";
 import { draggingStart } from "./draggingFunctions/draggingStart";
 import { dragging } from "./draggingFunctions/dragging";
@@ -28,7 +32,7 @@ export default function DynamicGrid() {
 
   // Current active widget placeholder and final position
   const [widgetPlaceholder, setWidgetPlaceholder] =
-    useState<WidgetDetailsType | null>(null);
+    useState<WidgetPlaceHolderType | null>(null);
 
   /* ...REFS DECLARATION... */
 
@@ -36,7 +40,7 @@ export default function DynamicGrid() {
   const parentRef = useRef<HTMLDivElement>(null);
 
   // Dragging initial cursor offset object
-  const draggedItemRef = useRef<DraggingOffsetsObject>(null);
+  const draggingOffsetsRef = useRef<DraggingOffsetsObject>(null);
 
   // Resizing initial dimensions and cursor global start position
   const resizedItemRef = useRef<ResizeInitObject>(null);
@@ -45,7 +49,7 @@ export default function DynamicGrid() {
   const currentWidgetRef = useRef<WidgetDetailsType>(null);
 
   // Current active widget placeholder details
-  const widgetPlaceHolderRef = useRef<WidgetDetailsType>(null);
+  const widgetPlaceHolderRef = useRef<WidgetPlaceHolderType>(null);
 
   // Animation id used to handle big states setters
   const animationId = useRef<number>(null);
@@ -74,7 +78,7 @@ export default function DynamicGrid() {
       const maxCol = Math.floor((width + GAP) / (COL_WIDTH + GAP)) - 1;
       const maxRow = Math.floor((height + GAP) / (ROW_HEIGHT + GAP) - 1);
       const newLimits = { maxCol, maxRow };
-      console.log( maxRow);
+      console.log(maxRow);
 
       limitsRef.current = newLimits;
 
@@ -91,58 +95,56 @@ export default function DynamicGrid() {
     return () => resizeObserver.disconnect();
   }, []);
 
- 
+  // const handleResizeStart = useCallback(
+  //   (id: number, e: React.PointerEvent<HTMLElement>) => {
+  //     currentWidgetRef.current = widgetsDetailsRef.current.find(
+  //       (w) => w.id == id
+  //     )!;
 
-  const handleResizeStart = useCallback(
-    (id: number, e: React.PointerEvent<HTMLElement>) => {
-      currentWidgetRef.current = widgetsDetailsRef.current.find(
-        (w) => w.id == id
-      )!;
-
-      resizeStart({
-        id,
-        e,
-        resizedItemRef,
-        widgetPlaceHolderRef,
-        COL_WIDTH,
-        ROW_HEIGHT,
-        currentWidgetRef,
-        handlersRefs,
-      });
-    },
-    []
-  );
-  const handleResize = useCallback((e: PointerEvent) => {
-    if (!resizedItemRef) return;
-    resize({
-      e,
-      resizedItemRef,
-      setWidgetsDetails,
-      currentWidgetRef,
-      maxCols:limitsRef.current.maxCol,
-      maxRows:limitsRef.current.maxRow,
-      widgetPlaceHolderRef,
-      setWidgetPlaceholder,
-      animationId,
-    });
-  }, []);
-  const handleResizeEnd = useCallback(() => {
-    resizeEnd({
-      resizedItemRef,
-      widgetPlaceHolderRef,
-      animationId,
-      setWidgetPlaceholder,
-      setWidgetsDetails,
-      handlersRefs,
-    });
-  }, []);
+  //     resizeStart({
+  //       id,
+  //       e,
+  //       resizedItemRef,
+  //       widgetPlaceHolderRef,
+  //       COL_WIDTH,
+  //       ROW_HEIGHT,
+  //       currentWidgetRef,
+  //       handlersRefs,
+  //     });
+  //   },
+  //   []
+  // );
+  // const handleResize = useCallback((e: PointerEvent) => {
+  //   if (!resizedItemRef) return;
+  //   resize({
+  //     e,
+  //     resizedItemRef,
+  //     setWidgetsDetails,
+  //     currentWidgetRef,
+  //     maxCols:limitsRef.current.maxCol,
+  //     maxRows:limitsRef.current.maxRow,
+  //     widgetPlaceHolderRef,
+  //     setWidgetPlaceholder,
+  //     animationId,
+  //   });
+  // }, []);
+  // const handleResizeEnd = useCallback(() => {
+  //   resizeEnd({
+  //     resizedItemRef,
+  //     widgetPlaceHolderRef,
+  //     animationId,
+  //     setWidgetPlaceholder,
+  //     setWidgetsDetails,
+  //     handlersRefs,
+  //   });
+  // }, []);
 
   /* ...DRAGGING HANDLERS... */
 
   // Handle initialization of (the offset of the cursor in the widget, the widget placeholder state, add eventlisteners)
   const handleDraggingStart = useCallback(
     (id: number, e: React.PointerEvent<HTMLElement>) => {
-      if (draggedItemRef.current) return;
+      if (draggingOffsetsRef.current) return;
 
       currentWidgetRef.current = widgetsDetailsRef.current.find(
         (w) => w.id === id
@@ -151,10 +153,8 @@ export default function DynamicGrid() {
       draggingStart({
         id,
         e,
-        draggedItemRef,
-        currentWidgetRef,
+        draggingOffsetsRef,
         handlersRefs,
-        setWidgetPlaceholder,
       });
     },
     []
@@ -162,26 +162,23 @@ export default function DynamicGrid() {
 
   // Handle (detection of the cursor new position, setting placeholder and current widget to their new values)
   const handleDragging = useCallback((e: PointerEvent) => {
-
-
     dragging({
       e,
-      draggedItemRef,
+      draggingOffsetsRef,
       currentWidgetRef,
-      widgetsDetailsRef,
       animationId,
       widgetPlaceHolderRef,
       setWidgetPlaceholder,
       setWidgetsDetails,
-      maxCols : limitsRef.current.maxCol,
-      maxRows : limitsRef.current.maxRow,
+      maxCols: limitsRef.current.maxCol,
+      maxRows: limitsRef.current.maxRow,
     });
   }, []);
 
   // Handle (the resset of used refs and states, remove eventlisteners)
   const handleDraggingEnd = useCallback(() => {
     draggingEnd({
-      draggedItemRef,
+      draggingOffsetsRef,
       widgetPlaceHolderRef,
       animationId,
       handlersRefs,
@@ -197,10 +194,10 @@ export default function DynamicGrid() {
     handlersRefs.current = {
       handleDragging,
       handleDraggingEnd,
-      handleResize,
-      handleResizeEnd,
+      // handleResize,
+      // handleResizeEnd,
     };
-  }, [handleDragging, handleDraggingEnd, handleResize, handleResizeEnd]);
+  }, [handleDragging, handleDraggingEnd]);
 
   // Track widgets detailes state change
   useEffect(() => {
@@ -210,7 +207,7 @@ export default function DynamicGrid() {
   return (
     <>
       <div
-        className={`max-w-full w-full relative overflow-x-hidden p-2`}
+        className={`max-w-full w-full relative overflow-x-hidden p-2 pr-0`}
         ref={parentRef}
       >
         {widgetsDetails.map((widget) => {
@@ -223,10 +220,10 @@ export default function DynamicGrid() {
               ROW_HEIGHT={ROW_HEIGHT}
               isDragged={
                 widget.id === widgetPlaceholder?.id &&
-                widget.x != widgetPlaceholder.x &&
-                widget.y != widgetPlaceholder.y
+                (widget.x != widgetPlaceholder.x ||
+                  widget.y != widgetPlaceholder.y)
               }
-              handleResizeStart={handleResizeStart}
+              // handleResizeStart={handleResizeStart}
             />
           );
         })}

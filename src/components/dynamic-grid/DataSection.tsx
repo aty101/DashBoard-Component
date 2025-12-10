@@ -8,14 +8,14 @@ function DataSection({
   COL_WIDTH,
   ROW_HEIGHT,
   isDragged = false,
-  handleResizeStart,
+  // handleResizeStart,
 }: {
   widget: WidgetDetailsType;
   handlePointerDown: (id: number, e: React.PointerEvent<HTMLElement>) => void;
   COL_WIDTH: number;
   ROW_HEIGHT: number;
   isDragged?: boolean;
-  handleResizeStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
+  // handleResizeStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
 }) {
   return (
     <section
@@ -41,7 +41,7 @@ function DataSection({
           className=" absolute border-b-2 border-r-2 bottom-0 right-0 border-black w-[17px] h-[17px] cursor-se-resize"
           onPointerDown={(e) => {
             e.stopPropagation();
-            handleResizeStart(widget.id, e);
+            // handleResizeStart(widget.id, e);
           }}
         ></span>
       </div>

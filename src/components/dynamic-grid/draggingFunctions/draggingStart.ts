@@ -3,36 +3,31 @@ import { DraggingStartParams } from "./draggingFunctionsParams";
 export const draggingStart = ({
   id,
   e,
-  draggedItemRef,
-  currentWidgetRef,
+  draggingOffsetsRef,
   handlersRefs,
-  setWidgetPlaceholder,
 }: DraggingStartParams) => {
-  e.currentTarget.setPointerCapture(e.pointerId);
 
+  // Set current pointer (avoid bugs)
+  e.currentTarget.setPointerCapture(e.pointerId);
+  
+  // Get widget bounds
   const widgetRect = e.currentTarget.getBoundingClientRect();
+
+  // Get the grid bounds
   const parentRect = e.currentTarget.parentElement?.getBoundingClientRect();
 
-  const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0) ;
-  const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0) ;
+  // Calc cursor offset from the widget for smooth drag
+  const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0);
+  const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0);
 
-  const currentWidget = currentWidgetRef.current!
-
-  draggedItemRef.current = {
+  // Set the cursor offset ref
+  draggingOffsetsRef.current = {
     id,
     offsetX,
     offsetY,
   };
 
-  setWidgetPlaceholder({
-    id: currentWidget.id,
-    width: currentWidget.width,
-    height: currentWidget.height,
-    x: currentWidget.x,
-    y: currentWidget.y,
-    content : currentWidget.content
-  });
-
+  // Add pointer global events
   if (handlersRefs.current) {
     window.addEventListener("pointermove", handlersRefs.current.handleDragging);
     window.addEventListener(

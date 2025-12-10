@@ -1,5 +1,10 @@
 import { RefObject } from "react";
-import { HandlersRefsType, SetStateType, WidgetDetailsType } from "../types";
+import {
+  HandlersRefsType,
+  SetStateType,
+  WidgetDetailsType,
+  WidgetPlaceHolderType,
+} from "../types";
 
 export type DraggingOffsetsObject = {
   id: number;
@@ -10,30 +15,27 @@ export type DraggingOffsetsObject = {
 export type DraggingStartParams = {
   id: number;
   e: React.PointerEvent<HTMLElement>;
-  draggedItemRef: RefObject<DraggingOffsetsObject | null>;
-  currentWidgetRef: RefObject<WidgetDetailsType | null>;
+  draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
   handlersRefs: RefObject<HandlersRefsType | null>;
-  setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>;
 };
 
 export type DraggingParams = {
   e: PointerEvent;
-  draggedItemRef: RefObject<DraggingOffsetsObject | null>;
+  draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
   animationId: RefObject<number | null>;
-  widgetsDetailsRef: RefObject<WidgetDetailsType[]>;
   currentWidgetRef: RefObject<WidgetDetailsType | null>;
-  widgetPlaceHolderRef: RefObject<WidgetDetailsType | null>;
-  setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>;
+  widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
+  setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   maxCols: number;
-  maxRows : number;
+  maxRows: number;
 };
 
 export type DraggingEndParams = {
-  draggedItemRef: RefObject<DraggingOffsetsObject | null>;
-  widgetPlaceHolderRef: RefObject<WidgetDetailsType | null>;
+  draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
+  widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
   animationId: RefObject<number | null>;
   handlersRefs: RefObject<HandlersRefsType | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
-  setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>;
+  setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
 };
