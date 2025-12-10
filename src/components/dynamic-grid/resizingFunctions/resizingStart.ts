@@ -15,8 +15,8 @@ export const resizeStart = ({
     id,
     width: currentWidget.width,
     height: currentWidget.height,
-    x: e.clientX,
-    y: e.clientY,
+    cursorGlobX: e.clientX,
+    cursorGlobY: e.clientY,
   };
 
   widgetPlaceHolderRef.current = {
@@ -25,6 +25,7 @@ export const resizeStart = ({
     height: currentWidget.height,
     x: currentWidget.x,
     y: currentWidget.y,
+    content: currentWidget.content,
   };
 
   if (handlersRefs.current) {

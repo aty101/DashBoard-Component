@@ -1,4 +1,4 @@
-import { GAP } from "../DynamicGrid";
+import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
 import { ResizingParams } from "./resizingFunctionsParams";
 
 export const resize = ({
@@ -8,10 +8,11 @@ export const resize = ({
   animationId,
   setWidgetsDetails,
   setWidgetPlaceholder,
-  COL_WIDTH,
-  ROW_HEIGHT,
+  currentWidgetRef,
+  maxCols,
+  maxRows,
 }: ResizingParams) => {
-  if (!resizedItemRef.current) return;
+  if (!resizedItemRef.current || !currentWidgetRef.current) return;
 
   const current = resizedItemRef.current;
 
@@ -23,17 +24,24 @@ export const resize = ({
     current.height * ROW_HEIGHT + (current.height - 1) * GAP;
 
   // mouse movement since resize start
-  const dx = e.clientX - current.x;
-  const dy = e.clientY - current.y;
+  const dx = e.clientX - current.cursorGlobX;
+  const dy = e.clientY - current.cursorGlobY;
 
   // new pixel dimensions
   const pixelWidth = pixelWidthBefore + dx;
   const pixelHeight = pixelHeightBefore + dy;
 
   // convert pixel → grid (🔥 no multipliers here)
-  const newWidth = Math.max((pixelWidth + GAP) / (COL_WIDTH + GAP), 2);
+  let newWidth = Math.max((pixelWidth + GAP) / (COL_WIDTH + GAP), 2);
 
-  const newHeight = Math.max((pixelHeight + GAP) / (ROW_HEIGHT + GAP), 1);
+  let newHeight = Math.max((pixelHeight + GAP) / (ROW_HEIGHT + GAP), 1);
+
+  if (currentWidgetRef.current.x + newWidth - 1 >= maxCols) {
+    newWidth = maxCols - (currentWidgetRef.current.x - 1);
+  }
+  if (currentWidgetRef.current.y + newHeight - 1 >= maxRows) {
+    newHeight = maxRows - (currentWidgetRef.current.y - 1);
+  }
 
   // update placeholder
   if (widgetPlaceHolderRef.current) {

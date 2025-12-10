@@ -1,10 +1,18 @@
 import { RefObject } from "react";
 import { HandlersRefsType, SetStateType, WidgetDetailsType } from "../types";
 
+export type ResizeInitObject = {
+  id: number;
+  width: number;
+  height: number;
+  cursorGlobX: number;
+  cursorGlobY: number;
+};
+
 export type ResizingStartParams = {
   id: number;
   e: React.PointerEvent<HTMLElement>;
-  resizedItemRef: RefObject<WidgetDetailsType | null>;
+  resizedItemRef: RefObject<ResizeInitObject | null>;
   widgetPlaceHolderRef: RefObject<WidgetDetailsType | null>;
   COL_WIDTH: number;
   ROW_HEIGHT: number;
@@ -14,17 +22,18 @@ export type ResizingStartParams = {
 
 export type ResizingParams = {
   e: PointerEvent;
-  resizedItemRef: RefObject<WidgetDetailsType | null>;
+  resizedItemRef: RefObject<ResizeInitObject | null>;
   widgetPlaceHolderRef: RefObject<WidgetDetailsType | null>;
+  currentWidgetRef: RefObject<WidgetDetailsType | null>;
   animationId: RefObject<number | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   setWidgetPlaceholder: SetStateType<WidgetDetailsType | null>;
-  COL_WIDTH: number;
-  ROW_HEIGHT: number;
+  maxCols: number;
+  maxRows: number;
 };
 
 export type ResizingEndParams = {
-  resizedItemRef: RefObject<WidgetDetailsType | null>;
+  resizedItemRef: RefObject<ResizeInitObject | null>;
   widgetPlaceHolderRef: RefObject<WidgetDetailsType | null>;
   animationId: RefObject<number | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;

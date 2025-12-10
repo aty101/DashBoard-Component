@@ -9,6 +9,7 @@ import { DraggingOffsetsObject } from "./draggingFunctions/draggingFunctionsPara
 import { resizeStart } from "./resizingFunctions/resizingStart";
 import { resize } from "./resizingFunctions/resizing";
 import { resizeEnd } from "./resizingFunctions/resizingEnd";
+import { ResizeInitObject } from "./resizingFunctions/resizingFunctionsParams";
 
 export const COL_WIDTH = 100;
 export const ROW_HEIGHT = 100;
@@ -38,7 +39,7 @@ export default function DynamicGrid() {
   const draggedItemRef = useRef<DraggingOffsetsObject>(null);
 
   // Resizing initial dimensions and cursor global start position
-  const resizedItemRef = useRef<WidgetDetailsType>(null);
+  const resizedItemRef = useRef<ResizeInitObject>(null);
 
   // Current active widget details
   const currentWidgetRef = useRef<WidgetDetailsType>(null);
@@ -117,8 +118,9 @@ export default function DynamicGrid() {
       e,
       resizedItemRef,
       setWidgetsDetails,
-      COL_WIDTH,
-      ROW_HEIGHT,
+      currentWidgetRef,
+      maxCols:limitsRef.current.maxCol,
+      maxRows:limitsRef.current.maxRow,
       widgetPlaceHolderRef,
       setWidgetPlaceholder,
       animationId,
@@ -160,11 +162,7 @@ export default function DynamicGrid() {
 
   // Handle (detection of the cursor new position, setting placeholder and current widget to their new values)
   const handleDragging = useCallback((e: PointerEvent) => {
-    const parentRect = parentRef.current?.getBoundingClientRect();
-    const maxCols =
-      Math.floor(((parentRect?.width ?? 0) + GAP) / (COL_WIDTH + GAP)) - 1;
-    const maxRows =
-      Math.floor(((parentRect?.height ?? 0) + GAP) / (ROW_HEIGHT + GAP)) - 1;
+
 
     dragging({
       e,
@@ -175,8 +173,8 @@ export default function DynamicGrid() {
       widgetPlaceHolderRef,
       setWidgetPlaceholder,
       setWidgetsDetails,
-      maxCols,
-      maxRows,
+      maxCols : limitsRef.current.maxCol,
+      maxRows : limitsRef.current.maxRow,
     });
   }, []);
 

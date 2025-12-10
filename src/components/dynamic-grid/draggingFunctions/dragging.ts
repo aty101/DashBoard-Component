@@ -19,19 +19,19 @@ export const dragging = ({
   const offsets = draggedItemRef.current;
   const currentWidget = currentWidgetRef.current!;
 
-  const newX = (e.clientX - offsets.offsetX) / (COL_WIDTH + GAP);
-  const newY = (e.clientY - offsets.offsetY) / (ROW_HEIGHT + GAP);
+  let newX = (e.clientX - offsets.offsetX) / (COL_WIDTH + GAP);
+  let newY = (e.clientY - offsets.offsetY) / (ROW_HEIGHT + GAP);
 
-  // if (newX < 0) {
-  //   newX = 0;
-  // } else if (newX + currentWidget.width - 1 >= maxCols) {
-  //   newX = maxCols - (currentWidget.width - 1);
-  // }
-  // if (newY < 0) {
-  //   newY = 0;
-  // } else if (newY + currentWidget.height - 1 >= maxRows) {
-  //   newY = maxRows - (currentWidget.height - 1);
-  // }
+  if (newX < 0) {
+    newX = 0;
+  } else if (newX + currentWidget.width - 1 >= maxCols) {
+    newX = maxCols - (currentWidget.width - 1);
+  }
+  if (newY < 0) {
+    newY = 0;
+  } else if (newY + currentWidget.height - 1 >= maxRows) {
+    newY = maxRows - (currentWidget.height - 1);
+  }
 
   const finalPosX = Math.round(newX);
   const finalPosY = Math.round(newY);
