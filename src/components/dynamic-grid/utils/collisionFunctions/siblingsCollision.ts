@@ -1,4 +1,4 @@
-import { WidgetDetailsType } from "../types";
+import { WidgetDetailsType } from "../../types";
 import { siblingsCollisionParams } from "./collisionFunctionsParams";
 
 

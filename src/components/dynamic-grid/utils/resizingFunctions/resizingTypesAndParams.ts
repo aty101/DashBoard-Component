@@ -1,10 +1,11 @@
 import { RefObject } from "react";
+
 import {
-  HandlersRefsType,
+  LimitsType,
   SetStateType,
   WidgetDetailsType,
   WidgetPlaceHolderType,
-} from "../types";
+} from "../../types";
 
 export type ResizeInitObject = {
   width: number;
@@ -17,7 +18,7 @@ export type ResizingStartParams = {
   e: React.PointerEvent<HTMLElement>;
   resizedItemRef: RefObject<ResizeInitObject | null>;
   currentWidgetRef: RefObject<WidgetDetailsType | null>;
-  handlersRefs: RefObject<HandlersRefsType | null>;
+  handlersRefs: RefObject<ResizeHandlersRefsType | null>;
 };
 
 export type ResizingParams = {
@@ -28,8 +29,7 @@ export type ResizingParams = {
   animationId: RefObject<number | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
-  maxCols: number;
-  maxRows: number;
+  limitsRef: RefObject<LimitsType>;
 };
 
 export type ResizingEndParams = {
@@ -38,5 +38,18 @@ export type ResizingEndParams = {
   animationId: RefObject<number | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
-  handlersRefs: RefObject<HandlersRefsType | null>;
+  handlersRefs: RefObject<ResizeHandlersRefsType | null>;
+};
+
+export type CalcNewSizeParams = {
+  e: PointerEvent;
+  initResizeData: ResizeInitObject;
+  maxCols: number;
+  maxRows: number;
+  currentWidget: WidgetDetailsType;
+};
+
+export type ResizeHandlersRefsType = {
+  handleResize: (e: PointerEvent) => void;
+  handleResizeEnd: () => void;
 };

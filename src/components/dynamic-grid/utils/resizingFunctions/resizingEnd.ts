@@ -1,4 +1,4 @@
-import { ResizingEndParams } from "./resizingFunctionsParams";
+import { ResizingEndParams } from "./resizingTypesAndParams";
 
 export const resizeEnd = ({
   resizedItemRef,

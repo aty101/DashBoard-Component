@@ -1,6 +1,6 @@
-import { WidgetPlaceHolderType } from "./../types";
-import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
-import { DraggingParams } from "./draggingFunctionsParams";
+import { WidgetPlaceHolderType } from "../../types";
+import { DraggingParams } from "../draggingTypesAndParams";
+import { calcNewPos } from "./calcNewPos";
 
 export const dragging = ({
   e,
@@ -10,28 +10,29 @@ export const dragging = ({
   setWidgetPlaceholder,
   setWidgetsDetails,
   currentWidgetRef,
-  maxCols,
-  maxRows,
+  limitsRef,
 }: DraggingParams) => {
   if (!draggingOffsetsRef.current || !currentWidgetRef.current) return;
 
-  const offsets = draggingOffsetsRef.current;
+  // Fetch max cols and rows
+  const maxCols = limitsRef.current.maxCol;
+  const maxRows = limitsRef.current.maxRow;
+
+  // Fetch initial offsets
+  const { offsetX, offsetY } = draggingOffsetsRef.current;
+
+  // Save current widget
   const currentWidget = currentWidgetRef.current;
 
-  // Calc the current cursor position in grid positioning
-  // (convert pixel coords to grid units, considering cell size and gap)
-  const cursorX = (e.clientX - offsets.offsetX) / (COL_WIDTH + GAP);
-  const cursorY = (e.clientY - offsets.offsetY) / (ROW_HEIGHT + GAP);
-
-  // Check the drag limits
-  const maxX = maxCols - (currentWidget.width - 1);
-  const maxY = maxRows - (currentWidget.height - 1);
-  const newX = Math.max(0, Math.min(cursorX, maxX));
-  const newY = Math.max(0, Math.min(cursorY, maxY));
-
-  // Assign the placeholder in a grid cell
-  const finalPosX = Math.round(newX);
-  const finalPosY = Math.round(newY);
+  // Calculate the new pos of widget and placeholder
+  const { finalPosX, finalPosY, newX, newY } = calcNewPos({
+    e,
+    offsetX,
+    offsetY,
+    maxCols,
+    maxRows,
+    currentWidget,
+  });
 
   // Create the placeholder widget object with current dimensions and position
   const widgetPlaceHolder: WidgetPlaceHolderType = {

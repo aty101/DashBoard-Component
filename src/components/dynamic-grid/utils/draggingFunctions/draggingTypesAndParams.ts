@@ -1,10 +1,11 @@
 import { RefObject } from "react";
+
 import {
-  HandlersRefsType,
+  LimitsType,
   SetStateType,
   WidgetDetailsType,
   WidgetPlaceHolderType,
-} from "../types";
+} from "../../types";
 
 export type DraggingOffsetsObject = {
   offsetX: number;
@@ -14,7 +15,7 @@ export type DraggingOffsetsObject = {
 export type DraggingStartParams = {
   e: React.PointerEvent<HTMLElement>;
   draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
-  handlersRefs: RefObject<HandlersRefsType | null>;
+  handlersRefs: RefObject<DragHandlersRefsType | null>;
 };
 
 export type DraggingParams = {
@@ -25,15 +26,26 @@ export type DraggingParams = {
   widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
-  maxCols: number;
-  maxRows: number;
+  limitsRef: RefObject<LimitsType>;
 };
 
 export type DraggingEndParams = {
   draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
   widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
   animationId: RefObject<number | null>;
-  handlersRefs: RefObject<HandlersRefsType | null>;
+  handlersRefs: RefObject<DragHandlersRefsType | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
+};
+export type CalcNewPos = {
+  e: PointerEvent;
+  offsetX: number;
+  offsetY: number;
+  maxCols: number;
+  maxRows: number;
+  currentWidget: WidgetDetailsType;
+};
+export type DragHandlersRefsType = {
+  handleDragging: (e: PointerEvent) => void;
+  handleDraggingEnd: () => void;
 };

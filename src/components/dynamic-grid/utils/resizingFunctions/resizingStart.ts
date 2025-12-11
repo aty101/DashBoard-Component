@@ -1,5 +1,5 @@
-import { COL_WIDTH, GAP, ROW_HEIGHT } from "../DynamicGrid";
-import { ResizingStartParams } from "./resizingFunctionsParams";
+import { COL_WIDTH, GAP, ROW_HEIGHT } from "../../grid-components/DynamicGrid";
+import { ResizingStartParams } from "./resizingTypesAndParams";
 
 export const resizeStart = ({
   e,

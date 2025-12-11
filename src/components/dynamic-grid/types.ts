@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 export type WidgetDetailsType = {
   id: number;
@@ -17,11 +17,18 @@ export type WidgetPlaceHolderType = {
   height: number;
 };
 
-export type HandlersRefsType = {
-  handleDragging: (e: PointerEvent) => void;
-  handleDraggingEnd: () => void;
-  handleResize: (e: PointerEvent) => void;
-  handleResizeEnd: () => void;
+export type GlobalRefsType = {
+  parentRef: RefObject<HTMLDivElement | null>;
+  currentWidgetRef: RefObject<WidgetDetailsType | null>;
+  widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
+  widgetsDetailsRef: RefObject<WidgetDetailsType[]>;
+  animationId: RefObject<number | null>;
+  limitsRef: RefObject<{
+    maxCol: number;
+    maxRow: number;
+  }>;
 };
+
+export type LimitsType = { maxCol: number; maxRow: number };
 
 export type SetStateType<T> = Dispatch<SetStateAction<T>>;

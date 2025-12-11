@@ -1,6 +1,4 @@
-
-import DynamicGrid from "@/components/dynamic-grid/DynamicGrid";
-
+import DynamicGrid from "@/components/dynamic-grid/grid-components/DynamicGrid";
 
 export default function Home() {
   return (

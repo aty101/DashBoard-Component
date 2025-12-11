@@ -1,4 +1,4 @@
-import { DraggingStartParams } from "./draggingFunctionsParams";
+import { DraggingStartParams } from "./draggingTypesAndParams";
 
 export const draggingStart = ({
   e,

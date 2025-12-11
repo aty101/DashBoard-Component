@@ -1,4 +1,4 @@
-import { DraggingEndParams } from "./draggingFunctionsParams";
+import { DraggingEndParams } from "./draggingTypesAndParams";
 
 export const draggingEnd = ({
   draggingOffsetsRef,
