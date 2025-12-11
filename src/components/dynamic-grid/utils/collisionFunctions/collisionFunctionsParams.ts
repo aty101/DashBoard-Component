@@ -1,8 +1,6 @@
-import { RefObject } from "react";
-import { SetStateType, WidgetDetailsType } from "../types";
+import { WidgetDetailsType, WidgetPlaceHolderType } from "../../types";
 
 export type siblingsCollisionParams = {
-  widgetPlaceHolderRef: RefObject<WidgetDetailsType | null>;
-  widgetsDetailsRef: RefObject<WidgetDetailsType[]>;
-
+  widgetPlaceholder: WidgetPlaceHolderType;
+  widgetsDetails: WidgetDetailsType[];
 };

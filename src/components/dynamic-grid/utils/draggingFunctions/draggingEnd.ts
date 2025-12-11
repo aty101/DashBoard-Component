@@ -2,13 +2,16 @@ import { DraggingEndParams } from "./draggingTypesAndParams";
 
 export const draggingEnd = ({
   draggingOffsetsRef,
-  widgetPlaceHolderRef,
-  animationId,
   handlersRefs,
+  globalRefs,
   setWidgetsDetails,
   setWidgetPlaceholder,
 }: DraggingEndParams) => {
+  // Fetch needed refs
+  const { widgetPlaceHolderRef, animationId } = globalRefs;
+
   if (!widgetPlaceHolderRef.current) return;
+
   const placeHolder = widgetPlaceHolderRef.current;
 
   // Reset the initial drag offset ref

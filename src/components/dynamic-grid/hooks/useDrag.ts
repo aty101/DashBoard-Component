@@ -6,11 +6,13 @@ import {
   WidgetDetailsType,
   WidgetPlaceHolderType,
 } from "../types";
-import { DraggingOffsetsObject, DragHandlersRefsType } from "../utils/draggingFunctions/draggingTypesAndParams";
+import {
+  DraggingOffsetsObject,
+  DragHandlersRefsType,
+} from "../utils/draggingFunctions/draggingTypesAndParams";
 import { draggingStart } from "../utils/draggingFunctions/draggingStart";
 import { dragging } from "../utils/draggingFunctions/dragging/dragging";
 import { draggingEnd } from "../utils/draggingFunctions/draggingEnd";
-
 
 export function useDrag(
   globalRefs: GlobalRefsType,
@@ -23,14 +25,8 @@ export function useDrag(
   // Ref to detect callbacks memory allocation
   const handlersRefs = useRef<DragHandlersRefsType>(null);
 
-  // Fetch globalRefs
-  const {
-    animationId,
-    currentWidgetRef,
-    limitsRef,
-    widgetPlaceHolderRef,
-    widgetsDetailsRef,
-  } = globalRefs;
+  // Fetch needed refs
+  const { currentWidgetRef, widgetsDetailsRef } = globalRefs;
 
   // Handle initialization of (the offset of the cursor in the widget, the widget placeholder state, add eventlisteners)
   const handleDraggingStart = useCallback(
@@ -57,12 +53,9 @@ export function useDrag(
       dragging({
         e,
         draggingOffsetsRef,
-        currentWidgetRef,
-        animationId,
-        widgetPlaceHolderRef,
+        globalRefs,
         setWidgetPlaceholder,
         setWidgetsDetails,
-        limitsRef,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,9 +67,8 @@ export function useDrag(
     () => {
       draggingEnd({
         draggingOffsetsRef,
-        widgetPlaceHolderRef,
-        animationId,
         handlersRefs,
+        globalRefs,
         setWidgetsDetails,
         setWidgetPlaceholder,
       });

@@ -4,9 +4,12 @@ import { ResizingStartParams } from "./resizingTypesAndParams";
 export const resizeStart = ({
   e,
   resizedItemRef,
-  currentWidgetRef,
   handlersRefs,
+  globalRefs,
 }: ResizingStartParams) => {
+  // Fetch needed refs
+  const { currentWidgetRef } = globalRefs;
+
   if (!currentWidgetRef.current) return;
 
   // Capture the pointer so resize stays smooth even if the cursor leaves the element

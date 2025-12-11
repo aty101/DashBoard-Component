@@ -1,17 +1,23 @@
-import { WidgetPlaceHolderType } from "../../types";
+import { WidgetPlaceHolderType } from "@/components/dynamic-grid/types";
 import { DraggingParams } from "../draggingTypesAndParams";
 import { calcNewPos } from "./calcNewPos";
+import { siblingsCollision } from "../../collisionFunctions/siblingsCollision";
 
 export const dragging = ({
   e,
   draggingOffsetsRef,
-  animationId,
-  widgetPlaceHolderRef,
+  globalRefs,
   setWidgetPlaceholder,
   setWidgetsDetails,
-  currentWidgetRef,
-  limitsRef,
 }: DraggingParams) => {
+  // Fetch needed refs
+  const {
+    currentWidgetRef,
+    limitsRef,
+    widgetPlaceHolderRef,
+    animationId,
+    widgetsDetailsRef,
+  } = globalRefs;
   if (!draggingOffsetsRef.current || !currentWidgetRef.current) return;
 
   // Fetch max cols and rows
@@ -52,18 +58,26 @@ export const dragging = ({
       // Change the placeholder on ui
       setWidgetPlaceholder(widgetPlaceHolder);
 
-      // Change current active widget
-      setWidgetsDetails((prev) =>
-        prev.map((widget) =>
-          widget.id === currentWidget.id
-            ? {
-                ...widget,
-                x: newX,
-                y: newY,
-              }
-            : widget
-        )
+      const copy = widgetsDetailsRef.current.filter(
+        (widget) => widget.id !== currentWidgetRef.current?.id
       );
+
+      siblingsCollision({
+        widgetPlaceholder: widgetPlaceHolder,
+        widgetsDetails: copy,
+      });
+
+      const widgetsState = [
+        ...copy,
+        {
+          ...currentWidget,
+          x: newX,
+          y: newY,
+        },
+      ];
+
+      // Change current active widget
+      setWidgetsDetails(widgetsState);
       animationId.current = null;
     });
   }

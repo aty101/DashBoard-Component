@@ -2,12 +2,13 @@ import { ResizingEndParams } from "./resizingTypesAndParams";
 
 export const resizeEnd = ({
   resizedItemRef,
-  widgetPlaceHolderRef,
-  animationId,
+  handlersRefs,
+  globalRefs,
   setWidgetPlaceholder,
   setWidgetsDetails,
-  handlersRefs,
 }: ResizingEndParams) => {
+  // Fetch needed refs
+  const { widgetPlaceHolderRef, animationId } = globalRefs;
   if (!widgetPlaceHolderRef.current) return;
 
   // Save the placeholder data which will be the last data of the widget

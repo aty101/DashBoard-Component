@@ -24,14 +24,8 @@ export function useResize(
   // Ref to detect callbacks memory allocation
   const handlersRefs = useRef<ResizeHandlersRefsType>(null);
 
-  // Fetch global refs
-  const {
-    animationId,
-    currentWidgetRef,
-    limitsRef,
-    widgetPlaceHolderRef,
-    widgetsDetailsRef,
-  } = globalRefs;
+  // Fetch needed refs
+  const { currentWidgetRef, widgetsDetailsRef } = globalRefs;
 
   // Resize Start handler (declare needed initial data)
   const handleResizeStart = useCallback(
@@ -43,8 +37,8 @@ export function useResize(
       resizeStart({
         e,
         resizedItemRef,
-        currentWidgetRef,
         handlersRefs,
+        globalRefs,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,12 +52,9 @@ export function useResize(
       resize({
         e,
         resizedItemRef,
-        currentWidgetRef,
-        widgetPlaceHolderRef,
+        globalRefs,
         setWidgetPlaceholder,
         setWidgetsDetails,
-        limitsRef,
-        animationId,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,11 +66,10 @@ export function useResize(
     () => {
       resizeEnd({
         resizedItemRef,
-        widgetPlaceHolderRef,
-        animationId,
+        handlersRefs,
+        globalRefs,
         setWidgetPlaceholder,
         setWidgetsDetails,
-        handlersRefs,
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

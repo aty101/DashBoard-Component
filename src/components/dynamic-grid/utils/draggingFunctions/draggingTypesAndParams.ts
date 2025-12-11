@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 
 import {
-  LimitsType,
+  GlobalRefsType,
   SetStateType,
   WidgetDetailsType,
   WidgetPlaceHolderType,
@@ -21,19 +21,15 @@ export type DraggingStartParams = {
 export type DraggingParams = {
   e: PointerEvent;
   draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
-  animationId: RefObject<number | null>;
-  currentWidgetRef: RefObject<WidgetDetailsType | null>;
-  widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
+  globalRefs: GlobalRefsType;
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
-  limitsRef: RefObject<LimitsType>;
 };
 
 export type DraggingEndParams = {
   draggingOffsetsRef: RefObject<DraggingOffsetsObject | null>;
-  widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
-  animationId: RefObject<number | null>;
   handlersRefs: RefObject<DragHandlersRefsType | null>;
+  globalRefs: GlobalRefsType;
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>;
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>;
 };

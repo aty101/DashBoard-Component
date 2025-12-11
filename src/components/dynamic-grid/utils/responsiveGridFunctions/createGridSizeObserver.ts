@@ -1,6 +1,5 @@
-import { LimitsType } from "./../../types";
 import { COL_WIDTH, GAP, ROW_HEIGHT } from "../../grid-components/DynamicGrid";
-import { GlobalRefsType, SetStateType } from "../../types";
+import { GlobalRefsType, LimitsType, SetStateType } from "../../types";
 
 export function createGridSizeObserver(
   globalRefs: GlobalRefsType,

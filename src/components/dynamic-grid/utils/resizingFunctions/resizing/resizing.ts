@@ -1,16 +1,23 @@
+import { siblingsCollision } from "../../collisionFunctions/siblingsCollision";
 import { ResizingParams } from "../resizingTypesAndParams";
 import { calcNewSize } from "./calcnewSize";
 
 export const resize = ({
   e,
   resizedItemRef,
-  widgetPlaceHolderRef,
-  animationId,
+  globalRefs,
   setWidgetsDetails,
   setWidgetPlaceholder,
-  currentWidgetRef,
-  limitsRef,
 }: ResizingParams) => {
+  // Fetch needed refs
+  const {
+    currentWidgetRef,
+    limitsRef,
+    widgetPlaceHolderRef,
+    animationId,
+    widgetsDetailsRef,
+  } = globalRefs;
+
   if (!resizedItemRef.current || !currentWidgetRef.current) return;
 
   // Fetch max cols and rows
@@ -33,7 +40,7 @@ export const resize = ({
   });
 
   // Set the new placeholder object
-  const placeholder = {
+  const widgetPlaceholder = {
     id: currentWidget.id,
     x: currentWidget.x,
     y: currentWidget.y,
@@ -42,22 +49,35 @@ export const resize = ({
   };
 
   // Set the placeholder ref to be used in the end of resize
-  widgetPlaceHolderRef.current = placeholder;
+  widgetPlaceHolderRef.current = widgetPlaceholder;
 
   // throttled states update
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
       // Change placeholder in ui
-      setWidgetPlaceholder(placeholder);
+      setWidgetPlaceholder(widgetPlaceholder);
 
-      // Change the current active widget
-      setWidgetsDetails((prev) =>
-        prev.map((widget) =>
-          widget.id === currentWidget.id
-            ? { ...widget, width: newWidth, height: newHeight }
-            : widget
-        )
+      const copy = widgetsDetailsRef.current.filter(
+        (widget) => widget.id !== currentWidgetRef.current?.id
       );
+
+      siblingsCollision({
+        widgetPlaceholder: widgetPlaceholder,
+        widgetsDetails: copy,
+      });
+
+      const widgetsState = [
+        ...copy,
+        {
+          ...currentWidget,
+          width: newWidth,
+          height: newHeight,
+        },
+      ];
+
+      // Change current active widget
+      setWidgetsDetails(widgetsState);
+
       animationId.current = null;
     });
   }
