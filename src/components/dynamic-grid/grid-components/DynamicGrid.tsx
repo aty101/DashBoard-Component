@@ -9,8 +9,8 @@ import DataSectionList from "./DataSectionList";
 import GridContextProvider from "./GridContextProvider";
 import { createGridSizeObserver } from "../utils/responsiveGridFunctions/createGridSizeObserver";
 
-export const COL_WIDTH = 100;
-export const ROW_HEIGHT = 100;
+export const COL_WIDTH = 150;
+export const ROW_HEIGHT = 150;
 export const GAP = 10;
 
 export default function DynamicGrid() {
@@ -18,10 +18,10 @@ export default function DynamicGrid() {
 
   // Widgets state
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
-    { id: 1, x: 0, y: 0, width: 2, height: 2, content: "data1" },
-    { id: 2, x: 2, y: 0, width: 2, height: 2, content: "data2" },
-    { id: 3, x: 0, y: 2, width: 2, height: 2, content: "data3" },
-    { id: 4, x: 2, y: 2, width: 2, height: 2, content: "data4" },
+    { id: 1, x: 6, y: 3, width: 1, height: 1, content: "data1" },
+    { id: 2, x: 7, y: 3, width: 1, height: 1, content: "data2" },
+    { id: 3, x: 6, y: 4, width: 1, height: 1, content: "data3" },
+    { id: 4, x: 7, y: 4, width: 1, height: 1, content: "data4" },
   ]);
 
   // Current active widget placeholder and final position
@@ -87,7 +87,7 @@ export default function DynamicGrid() {
         }}
       >
         <div
-          className={`max-w-full w-full relative overflow-x-hidden p-2 pr-0 select-none`}
+          className={`max-w-full w-full relative overflow-hidden p-2 pr-0 select-none`}
           ref={parentRef}
         >
           <DataSectionList />

@@ -28,12 +28,12 @@ export function calcNewSize({
   const maxWidth = maxCols - (currentWidget.x - 1);
   const maxHeight = maxRows - (currentWidget.y - 1);
 
-  const newWidth = Math.min(maxWidth, Math.max(gridWidth, 2));
+  const newWidth = Math.min(maxWidth, Math.max(gridWidth, 1));
   const newHeight = Math.min(maxHeight, Math.max(gridHeight, 1));
 
   // Placeholder current size
-  const finalWidth = Math.round(newWidth);
-  const finalHeight = Math.round(newHeight);
+  const finalWidth = Math.ceil(newWidth);
+  const finalHeight = Math.ceil(newHeight);
 
   return {
     newWidth,

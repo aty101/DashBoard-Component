@@ -34,8 +34,7 @@ export default function Placeholder() {
         height,
         transform,
       }}
-      className="absolute bg-blue-300 inline-block z-1 opacity-50
-          cursor-grab select-none"
+      className="absolute bg-blue-300 inline-block z-1 opacity-50 cursor-grab select-none duration-200"
     ></div>
   );
 }

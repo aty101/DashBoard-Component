@@ -56,8 +56,9 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
         transform,
         zIndex,
         cursor,
+        transitionDuration: isDragged ? "0s" : "0.2s",
       }}
-      className="absolute bg-blue-100  flex justify-end items-end p-1 select-none"
+      className="absolute bg-blue-100  flex justify-end items-end p-1 select-none border border-black "
     >
       <div className="w-full h-full relative  flex justify-center items-center">
         <h2 className="text-3xl capitalize text-black ">{widget.content}</h2>

@@ -1,10 +1,7 @@
 import { WidgetDetailsType, WidgetPlaceHolderType } from "../../types";
 import { siblingsCollisionParams } from "./collisionFunctionsParams";
 
-function widgetsOverlap(
-  a: WidgetPlaceHolderType,
-  b: WidgetDetailsType
-): boolean {
+function widgetsOverlap(a: WidgetPlaceHolderType, b: WidgetDetailsType) {
   const aLeft = a.x;
   const aRight = a.x + a.width;
   const aTop = a.y;
@@ -15,7 +12,10 @@ function widgetsOverlap(
   const bTop = b.y;
   const bBottom = b.y + b.height;
 
-  return aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
+  const collision =
+    aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
+
+  return collision;
 }
 
 function resolve(widgets: WidgetDetailsType[], moved: WidgetPlaceHolderType) {
@@ -26,9 +26,8 @@ function resolve(widgets: WidgetDetailsType[], moved: WidgetPlaceHolderType) {
 
     for (let i = 0; i < widgets.length; i++) {
       const w = widgets[i];
-
-      if (w.id !== moved.id && widgetsOverlap(moved, w)) {
-        console.log(w.id);
+      const isOverlapping = widgetsOverlap(moved, w);
+      if (w.id !== moved.id && isOverlapping) {
         // Push widget 'w' down
         w.y = moved.y + moved.height;
 
