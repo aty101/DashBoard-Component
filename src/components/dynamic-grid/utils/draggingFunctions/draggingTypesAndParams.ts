@@ -40,6 +40,13 @@ export type CalcNewPos = {
   maxCols: number;
   maxRows: number;
   currentWidget: WidgetDetailsType;
+  widgetsDetails: WidgetDetailsType[];
+};
+export type CalcRePos = {
+  maxCols: number;
+  maxRows: number;
+  currentWidget: WidgetDetailsType;
+  widgetsDetails: WidgetDetailsType[];
 };
 export type DragHandlersRefsType = {
   handleDragging: (e: PointerEvent) => void;

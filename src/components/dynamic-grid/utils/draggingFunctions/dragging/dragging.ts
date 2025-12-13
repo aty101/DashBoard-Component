@@ -30,42 +30,43 @@ export const dragging = ({
   // Save current widget
   const currentWidget = currentWidgetRef.current;
 
-  // Calculate the new pos of widget and placeholder
-  const { finalPosX, finalPosY, newX, newY } = calcNewPos({
-    e,
-    offsetX,
-    offsetY,
-    maxCols,
-    maxRows,
-    currentWidget,
-  });
-
-  // Create the placeholder widget object with current dimensions and position
-  const widgetPlaceHolder: WidgetPlaceHolderType = {
-    id: currentWidget.id,
-    x: finalPosX,
-    y: finalPosY,
-    width: currentWidget.width,
-    height: currentWidget.height,
-  };
-
-  // Store the placeholder in ref for use outside this function if needed
-  widgetPlaceHolderRef.current = widgetPlaceHolder;
-
   // Set animationFrame to reduce the number of rerenders during drag
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
-      // Change the placeholder on ui
-      setWidgetPlaceholder(widgetPlaceHolder);
+      // Calculate the new pos of widget and placeholder
+      const { finalPosX, finalPosY, newX, newY, realY } = calcNewPos({
+        e,
+        offsetX,
+        offsetY,
+        maxCols,
+        maxRows,
+        currentWidget,
+        widgetsDetails: widgetsDetailsRef.current,
+      });
+
+      // Create the placeholder widget object with current dimensions and position
+      const widgetPlaceHolder: WidgetPlaceHolderType = {
+        id: currentWidget.id,
+        x: finalPosX,
+        y: realY,
+        width: currentWidget.width,
+        height: currentWidget.height,
+      };
 
       const copy = widgetsDetailsRef.current.filter(
         (widget) => widget.id !== currentWidgetRef.current?.id
       );
 
-      siblingsCollision({
-        widgetPlaceholder: widgetPlaceHolder,
-        widgetsDetails: copy,
-      });
+      // siblingsCollision({
+      //   widgetPlaceholder: widgetPlaceHolder,
+      //   widgetsDetails: copy,
+      // });
+
+      // Store the placeholder in ref for use outside this function if needed
+      widgetPlaceHolderRef.current = { ...widgetPlaceHolder, y: finalPosY };
+
+      // Change the placeholder on ui
+      setWidgetPlaceholder({ ...widgetPlaceHolder, y: finalPosY });
 
       const widgetsState = [
         ...copy,

@@ -18,10 +18,10 @@ export default function DynamicGrid() {
 
   // Widgets state
   const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
-    { id: 1, x: 6, y: 3, width: 1, height: 1, content: "data1" },
-    { id: 2, x: 7, y: 3, width: 1, height: 1, content: "data2" },
-    { id: 3, x: 6, y: 4, width: 1, height: 1, content: "data3" },
-    { id: 4, x: 7, y: 4, width: 1, height: 1, content: "data4" },
+    { id: 1, x: 0, y: 0, width: 2, height: 1, content: "data1" },
+    { id: 2, x: 0, y: 1, width: 2, height: 1, content: "data2" },
+    { id: 3, x: 2, y: 0, width: 1, height: 2, content: "data3" },
+    { id: 4, x: 3, y: 0, width: 3, height: 2, content: "data4" },
   ]);
 
   // Current active widget placeholder and final position

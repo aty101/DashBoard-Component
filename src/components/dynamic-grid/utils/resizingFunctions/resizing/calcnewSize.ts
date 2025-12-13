@@ -32,8 +32,8 @@ export function calcNewSize({
   const newHeight = Math.min(maxHeight, Math.max(gridHeight, 1));
 
   // Placeholder current size
-  const finalWidth = Math.ceil(newWidth);
-  const finalHeight = Math.ceil(newHeight);
+  const finalWidth = Math.round(newWidth);
+  const finalHeight = Math.round(newHeight);
 
   return {
     newWidth,
