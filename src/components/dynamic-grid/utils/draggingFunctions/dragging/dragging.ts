@@ -1,7 +1,11 @@
 import { WidgetPlaceHolderType } from "@/components/dynamic-grid/types";
 import { DraggingParams } from "../draggingTypesAndParams";
-import { calcNewPos } from "./calcNewPos";
-import { siblingsCollision } from "../../collisionFunctions/siblingsCollision";
+import {
+  autoPositionWidgets,
+  calcNewPos,
+  findFinalY,
+  pushOverlappedWidgetsDown,
+} from "./calcNewPos";
 
 export const dragging = ({
   e,
@@ -10,7 +14,6 @@ export const dragging = ({
   setWidgetPlaceholder,
   setWidgetsDetails,
 }: DraggingParams) => {
-  // Fetch needed refs
   const {
     currentWidgetRef,
     limitsRef,
@@ -20,65 +23,63 @@ export const dragging = ({
   } = globalRefs;
   if (!draggingOffsetsRef.current || !currentWidgetRef.current) return;
 
-  // Fetch max cols and rows
   const maxCols = limitsRef.current.maxCol;
   const maxRows = limitsRef.current.maxRow;
 
-  // Fetch initial offsets
   const { offsetX, offsetY } = draggingOffsetsRef.current;
-
-  // Save current widget
   const currentWidget = currentWidgetRef.current;
 
-  // Set animationFrame to reduce the number of rerenders during drag
+  // Step 1: Calculate finalX and preliminary realY (newY) based on pointer event and limits
+  const { finalPosX, newX, newY } = calcNewPos({
+    e,
+    offsetX,
+    offsetY,
+    maxCols,
+    currentWidget,
+    maxRows,
+  });
+
+  // Step 2: Find finalY based on finalX to avoid vertical overlaps
+  const finalPosY = findFinalY(
+    { ...currentWidget, x: finalPosX, y: 0 }, // y=0 for searching
+    widgetsDetailsRef.current.filter((w) => w.id !== currentWidget.id),
+    finalPosX
+  );
+
+  // Step 3: Create placeholder with finalX and finalY
+  const widgetPlaceHolder: WidgetPlaceHolderType = {
+    id: currentWidget.id,
+    x: finalPosX,
+    y: finalPosY,
+    width: currentWidget.width,
+    height: currentWidget.height,
+  };
+
+  widgetPlaceHolderRef.current = widgetPlaceHolder;
+
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
-      // Calculate the new pos of widget and placeholder
-      const { finalPosX, finalPosY, newX, newY, realY } = calcNewPos({
-        e,
-        offsetX,
-        offsetY,
-        maxCols,
-        maxRows,
-        currentWidget,
-        widgetsDetails: widgetsDetailsRef.current,
-      });
+      setWidgetPlaceholder(widgetPlaceHolder);
 
-      // Create the placeholder widget object with current dimensions and position
-      const widgetPlaceHolder: WidgetPlaceHolderType = {
-        id: currentWidget.id,
-        x: finalPosX,
-        y: realY,
-        width: currentWidget.width,
-        height: currentWidget.height,
-      };
-
-      const copy = widgetsDetailsRef.current.filter(
-        (widget) => widget.id !== currentWidgetRef.current?.id
+      // Copy widgets excluding the dragged widget
+      const widgetsCopy = widgetsDetailsRef.current.filter(
+        (w) => w.id !== currentWidget.id
       );
 
-      // siblingsCollision({
-      //   widgetPlaceholder: widgetPlaceHolder,
-      //   widgetsDetails: copy,
-      // });
+      // Step 4: Push collided widgets down recursively
+      // pushOverlappedWidgetsDown(widgetPlaceHolder, widgetsCopy);
 
-      // Store the placeholder in ref for use outside this function if needed
-      widgetPlaceHolderRef.current = { ...widgetPlaceHolder, y: finalPosY };
-
-      // Change the placeholder on ui
-      setWidgetPlaceholder({ ...widgetPlaceHolder, y: finalPosY });
-
-      const widgetsState = [
-        ...copy,
-        {
-          ...currentWidget,
-          x: newX,
-          y: newY,
-        },
+      // Step 5: Add moved widget back with updated pos
+      const updatedWidgets = [
+        ...widgetsCopy,
+        { ...currentWidget, x: newX, y: newY },
       ];
+      // Step 6: Auto position widgets to compact
+      // autoPositionWidgets(updatedWidgets);
 
-      // Change current active widget
-      setWidgetsDetails(widgetsState);
+      // Step 7: Update state
+      setWidgetsDetails(updatedWidgets);
+
       animationId.current = null;
     });
   }

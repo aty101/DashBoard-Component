@@ -87,7 +87,7 @@ export default function DynamicGrid() {
         }}
       >
         <div
-          className={`max-w-full w-full relative overflow-hidden p-2 pr-0 select-none`}
+          className={`max-w-full w-full relative overflowx-x-hidden p-2 pr-0 select-none`}
           ref={parentRef}
         >
           <DataSectionList />

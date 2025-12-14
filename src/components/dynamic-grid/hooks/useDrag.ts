@@ -14,8 +14,10 @@ import { draggingStart } from "../utils/draggingFunctions/draggingStart";
 import { dragging } from "../utils/draggingFunctions/dragging/dragging";
 import { draggingEnd } from "../utils/draggingFunctions/draggingEnd";
 
+
 export function useDrag(
   globalRefs: GlobalRefsType,
+
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>,
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>
 ) {
@@ -84,6 +86,8 @@ export function useDrag(
       handleDraggingEnd,
     };
   }, [handleDragging, handleDraggingEnd]);
+
+
 
   return handleDraggingStart;
 }
