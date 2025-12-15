@@ -1,11 +1,6 @@
 import { WidgetPlaceHolderType } from "@/components/dynamic-grid/types";
 import { DraggingParams } from "../draggingTypesAndParams";
-import {
-  autoPositionWidgets,
-  calcNewPos,
-  findFinalY,
-  pushOverlappedWidgetsDown,
-} from "./calcNewPos";
+import { calcNewPos, findFinalY } from "./calcNewPos";
 
 export const dragging = ({
   e,
@@ -30,7 +25,7 @@ export const dragging = ({
   const currentWidget = currentWidgetRef.current;
 
   // Step 1: Calculate finalX and preliminary realY (newY) based on pointer event and limits
-  const { finalPosX, newX, newY } = calcNewPos({
+  const { finalPosX, newX, newY, } = calcNewPos({
     e,
     offsetX,
     offsetY,
