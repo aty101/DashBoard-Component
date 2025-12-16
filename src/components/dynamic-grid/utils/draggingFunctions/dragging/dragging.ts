@@ -1,6 +1,11 @@
 import { WidgetPlaceHolderType } from "@/components/dynamic-grid/types";
 import { DraggingParams } from "../draggingTypesAndParams";
-import { calcNewPos, findFinalY } from "./calcNewPos";
+import {
+  autoPositionWidgets,
+  calcNewPos,
+  findFinalY,
+  pushOverlappedWidgetsDown,
+} from "./calcNewPos";
 
 export const dragging = ({
   e,
@@ -25,7 +30,7 @@ export const dragging = ({
   const currentWidget = currentWidgetRef.current;
 
   // Step 1: Calculate finalX and preliminary realY (newY) based on pointer event and limits
-  const { finalPosX, newX, newY, } = calcNewPos({
+  const { finalPosX, newX, newY, realY } = calcNewPos({
     e,
     offsetX,
     offsetY,
@@ -62,18 +67,25 @@ export const dragging = ({
       );
 
       // Step 4: Push collided widgets down recursively
-      // pushOverlappedWidgetsDown(widgetPlaceHolder, widgetsCopy);
+      pushOverlappedWidgetsDown(
+        { ...widgetPlaceHolder, x: finalPosX, y: realY },
+        widgetsCopy
+      );
 
       // Step 5: Add moved widget back with updated pos
       const updatedWidgets = [
         ...widgetsCopy,
-        { ...currentWidget, x: newX, y: newY },
+        { ...currentWidget, x: finalPosX, y: realY },
       ];
       // Step 6: Auto position widgets to compact
-      // autoPositionWidgets(updatedWidgets);
+      autoPositionWidgets(widgetPlaceHolder.id, updatedWidgets);
 
       // Step 7: Update state
-      setWidgetsDetails(updatedWidgets);
+      setWidgetsDetails(
+        updatedWidgets.map((w) =>
+          w.id === widgetPlaceHolder.id ? { ...w, x: newX, y: newY } : w
+        )
+      );
 
       animationId.current = null;
     });

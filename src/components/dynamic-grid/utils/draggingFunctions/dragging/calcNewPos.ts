@@ -81,54 +81,63 @@ export function findFinalY(
   }
 }
 
+function overlaps(a: WidgetPlaceHolderType, b: WidgetDetailsType) {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
 // Push collided widgets down recursively
 export function pushOverlappedWidgetsDown(
-  draggedWidget: WidgetPlaceHolderType,
-  widgets: WidgetDetailsType[]
+  source: WidgetPlaceHolderType,
+  widgets: WidgetDetailsType[],
+  visited = new Set<number>()
 ) {
-  // Keep pushing overlapped widgets down until no collisions
-  let collisionDetected = true;
+  // 1. Find all widgets overlapping source
+  const collisions = widgets
+    .filter(
+      (w) => w.id !== source.id && !visited.has(w.id) && overlaps(source, w)
+    )
+    // IMPORTANT: sort by Y so stacking is correct
+    .sort((a, b) => a.y - b.y);
 
-  while (collisionDetected) {
-    collisionDetected = false;
+  if (collisions.length === 0) return;
 
-    for (const widget of widgets) {
-      if (widget.id === draggedWidget.id) continue;
+  let nextY = source.y + source.height;
 
-      const isOverlapping =
-        draggedWidget.x < widget.x + widget.width &&
-        draggedWidget.x + draggedWidget.width > widget.x &&
-        draggedWidget.y < widget.y + widget.height &&
-        draggedWidget.y + draggedWidget.height > widget.y;
+  for (const widget of collisions) {
+    visited.add(widget.id);
 
-      if (isOverlapping) {
-        // Push the overlapped widget down *below* the dragged widget
-        widget.y = draggedWidget.y + draggedWidget.height;
+    // 2. Stack widgets vertically
+    widget.y = nextY;
+    nextY += widget.height;
 
-        // Now the pushed widget might overlap others, so set draggedWidget to that widget for next iteration
-        draggedWidget = {
-          id: widget.id,
-          x: widget.x,
-          y: widget.y,
-          width: widget.width,
-          height: widget.height,
-        };
-
-        collisionDetected = true;
-        break; // restart the loop to check all widgets again
-      }
-    }
+    // 3. Resolve secondary collisions
+    pushOverlappedWidgetsDown(
+      {
+        id: widget.id,
+        x: widget.x,
+        y: widget.y,
+        width: widget.width,
+        height: widget.height,
+      },
+      widgets,
+      visited
+    );
   }
 }
 
 // Compact widgets upwards to fill empty vertical space
-export function autoPositionWidgets(widgets: WidgetDetailsType[]) {
+export function autoPositionWidgets(id: number, widgets: WidgetDetailsType[]) {
   // Sort widgets by x then y ascending
   widgets.sort((a, b) => a.x - b.x || a.y - b.y);
 
   for (let i = 0; i < widgets.length; i++) {
     const widget = widgets[i];
-
+    if (widget.id === id) continue;
     let targetY = 0;
 
     while (true) {
