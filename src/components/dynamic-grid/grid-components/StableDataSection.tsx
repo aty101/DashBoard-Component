@@ -26,7 +26,7 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
   const y = widget.y * (ROW_HEIGHT + GAP);
 
   // The translate value
-  const transform = `translate(${x}px, ${y}px)`;
+  const transform = `translateX(${x}px) translateY(${y}px)`;
 
   // Show the dragged element in a heigher level
   const zIndex = `${isDragged ? "2" : "0"}`;
@@ -47,6 +47,7 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
     },
     [handleResizeStart, widget.id]
   );
+
   return (
     <section
       onPointerDown={dragPointerDown}
@@ -56,7 +57,7 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
         transform,
         zIndex,
         cursor,
-        transitionDuration: isDragged ? "0s" : "0.2s",
+        transitionDuration: isDragged ? "0s" : "0.3s",
       }}
       className="absolute bg-blue-100  flex justify-end items-end p-1 select-none border border-black "
     >
@@ -71,4 +72,4 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
   );
 }
 
-export const StableDataSection = React.memo(DataSection);
+export const StableDataSection = DataSection;

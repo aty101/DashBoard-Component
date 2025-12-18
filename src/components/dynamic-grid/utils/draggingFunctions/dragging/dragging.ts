@@ -5,6 +5,7 @@ import {
   calcNewPos,
   findFinalY,
   pushOverlappedWidgetsDown,
+  pushOverlappedWidgetsDownOptimized,
 } from "./calcNewPos";
 
 export const dragging = ({
@@ -38,27 +39,27 @@ export const dragging = ({
     currentWidget,
     maxRows,
   });
-
-  // Step 2: Find finalY based on finalX to avoid vertical overlaps
-  const finalPosY = findFinalY(
-    { ...currentWidget, x: finalPosX, y: 0 }, // y=0 for searching
-    widgetsDetailsRef.current.filter((w) => w.id !== currentWidget.id),
-    finalPosX
-  );
-
-  // Step 3: Create placeholder with finalX and finalY
-  const widgetPlaceHolder: WidgetPlaceHolderType = {
-    id: currentWidget.id,
-    x: finalPosX,
-    y: finalPosY,
-    width: currentWidget.width,
-    height: currentWidget.height,
-  };
-
-  widgetPlaceHolderRef.current = widgetPlaceHolder;
+ 
 
   if (!animationId.current) {
     animationId.current = requestAnimationFrame(() => {
+      // Step 2: Find finalY based on finalX to avoid vertical overlaps
+      const finalPosY = findFinalY(
+        { ...currentWidget, x: finalPosX, y: 0 }, // y=0 for searching
+        widgetsDetailsRef.current.filter((w) => w.id !== currentWidget.id),
+        finalPosX
+      );
+
+      // Step 3: Create placeholder with finalX and finalY
+      const widgetPlaceHolder: WidgetPlaceHolderType = {
+        id: currentWidget.id,
+        x: finalPosX,
+        y: finalPosY,
+        width: currentWidget.width,
+        height: currentWidget.height,
+      };
+
+      widgetPlaceHolderRef.current = widgetPlaceHolder;
       setWidgetPlaceholder(widgetPlaceHolder);
 
       // Copy widgets excluding the dragged widget
@@ -67,8 +68,12 @@ export const dragging = ({
       );
 
       // Step 4: Push collided widgets down recursively
-      pushOverlappedWidgetsDown(
+      const widgetsByY = [...widgetsCopy].sort((a, b) => a.y - b.y);
+      
+      
+      pushOverlappedWidgetsDownOptimized(
         { ...widgetPlaceHolder, x: finalPosX, y: realY },
+        widgetsByY,
         widgetsCopy
       );
 
@@ -78,14 +83,14 @@ export const dragging = ({
         { ...currentWidget, x: finalPosX, y: realY },
       ];
       // Step 6: Auto position widgets to compact
-      autoPositionWidgets(widgetPlaceHolder.id, updatedWidgets);
 
-      // Step 7: Update state
-      setWidgetsDetails(
-        updatedWidgets.map((w) =>
-          w.id === widgetPlaceHolder.id ? { ...w, x: newX, y: newY } : w
-        )
+      autoPositionWidgets(widgetPlaceHolder.id, updatedWidgets);
+      
+      const lastWidgets = updatedWidgets.map((w) =>
+        w.id === widgetPlaceHolder.id ? { ...w, x: newX, y: newY } : w
       );
+      // Step 7: Update state
+      setWidgetsDetails(lastWidgets);
 
       animationId.current = null;
     });

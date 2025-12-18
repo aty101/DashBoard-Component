@@ -48,6 +48,7 @@ export function calcNewPos({
   // Assign the placeholder in a grid cell
   const finalPosX = Math.round(newX);
   const realY = Math.round(newY);
+  console.log(realY)
 
   return {
     newX,
@@ -94,13 +95,10 @@ function overlaps(a: WidgetPlaceHolderType, b: WidgetDetailsType) {
 export function pushOverlappedWidgetsDown(
   source: WidgetPlaceHolderType,
   widgets: WidgetDetailsType[]
-
 ) {
   // 1. Find all widgets overlapping source
   const collisions = widgets
-    .filter(
-      (w) => w.id !== source.id  && overlaps(source, w)
-    )
+    .filter((w) => w.id !== source.id && overlaps(source, w))
     // IMPORTANT: sort by Y so stacking is correct
     .sort((a, b) => a.y - b.y);
 
@@ -109,8 +107,7 @@ export function pushOverlappedWidgetsDown(
   let nextY = source.y + source.height;
 
   for (const widget of collisions) {
-
-    console.log(widget.id)
+    console.log(widget.id);
     // 2. Stack widgets vertically
     widget.y = nextY;
     nextY += widget.height;
@@ -125,7 +122,60 @@ export function pushOverlappedWidgetsDown(
         height: widget.height,
       },
       widgets
-   
+    );
+  }
+}
+
+function binarySearchByY(arr: WidgetDetailsType[], y: number): number {
+  let left = 0,
+    right = arr.length - 1;
+  while (left <= right) {
+    const mid = (left + right) >> 1;
+    if (arr[mid].y < y) left = mid + 1;
+    else right = mid - 1;
+  }
+  return left;
+}
+
+export function pushOverlappedWidgetsDownOptimized(
+  source: WidgetPlaceHolderType,
+  widgetsByY: WidgetDetailsType[],
+  widgets: WidgetDetailsType[]
+) {
+  // Define search bounds
+  const searchStartIndex = binarySearchByY(widgetsByY, source.y - 150);
+  const searchEndIndex = binarySearchByY(
+    widgetsByY,
+    source.y + source.height + 150
+  );
+
+  // Narrow search range
+  const candidates = widgetsByY.slice(searchStartIndex, searchEndIndex);
+
+  // Filter candidates for overlap, excluding source
+  const collisions = candidates
+    .filter((w) => w.id !== source.id && overlaps(source, w))
+    .sort((a, b) => a.y - b.y);
+
+  if (collisions.length === 0) return;
+
+  let nextY = source.y + source.height;
+
+  for (const widget of collisions) {
+    widget.y = nextY;
+    nextY += widget.height;
+    
+
+    pushOverlappedWidgetsDownOptimized(
+      {
+        id: widget.id,
+        x: widget.x,
+        y: widget.y,
+        width: widget.width,
+        height: widget.height,
+      },
+      widgetsByY,
+      widgets
     );
   }
 }
@@ -133,7 +183,7 @@ export function pushOverlappedWidgetsDown(
 // Compact widgets upwards to fill empty vertical space
 export function autoPositionWidgets(id: number, widgets: WidgetDetailsType[]) {
   // Sort widgets by x then y ascending
-  widgets.sort((a, b) => a.x - b.x || a.y - b.y);
+  // widgets.sort((a, b) => a.x - b.x || a.y - b.y);
 
   for (let i = 0; i < widgets.length; i++) {
     const widget = widgets[i];
