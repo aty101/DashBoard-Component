@@ -45,8 +45,8 @@ export function useDrag(
         handlersRefs,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    
+    [currentWidgetRef, widgetsDetailsRef]
   );
 
   // Handle (detection of the cursor new position, setting placeholder and current widget to their new values)
@@ -60,8 +60,8 @@ export function useDrag(
         setWidgetsDetails,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    
+    [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
   );
 
   // Handle (the resset of used refs and states, remove eventlisteners)
@@ -75,8 +75,8 @@ export function useDrag(
         setWidgetPlaceholder,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    
+    [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
   );
 
   // Detect if the handlers are ready or not

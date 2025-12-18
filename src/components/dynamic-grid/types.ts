@@ -29,6 +29,12 @@ export type GlobalRefsType = {
   }>;
 };
 
+export type GridSizeType = {
+  COL_WIDTH: number;
+  ROW_HEIGHT: number;
+  GAP: number;
+} | null;
+
 export type LimitsType = { maxCol: number; maxRow: number };
 
 export type SetStateType<T> = Dispatch<SetStateAction<T>>;

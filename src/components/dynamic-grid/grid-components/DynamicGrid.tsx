@@ -1,6 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import { LimitsType, WidgetDetailsType, WidgetPlaceHolderType } from "../types";
+import { useEffect, useEffectEvent, useState } from "react";
+import {
+  GridSizeType,
+  LimitsType,
+  WidgetDetailsType,
+  WidgetPlaceHolderType,
+} from "../types";
 import { useGlobalRefs } from "../hooks/useGlobalRefs";
 import { useDrag } from "../hooks/useDrag";
 import { useResize } from "../hooks/useResize";
@@ -41,6 +46,8 @@ export default function DynamicGrid() {
     maxRow: 0,
   });
 
+  const [gridSize, setGridSize] = useState<GridSizeType>(null);
+
   // Fetch all global refs to be passed to handlers
   const globalRefs = useGlobalRefs(widgetsDetails);
 
@@ -63,26 +70,29 @@ export default function DynamicGrid() {
   /* ...EFFECT TO CAPTURE  MEMORY LOCATIONS AND STATES CHANGES... */
 
   // Attach size observer to the grid div
-  useEffect(
-    () => {
-      if (!parentRef.current) return;
-      const resizeObserver = createGridSizeObserver(globalRefs, setLimitsState);
-      return () => {
-        if (resizeObserver) resizeObserver.disconnect();
-      };
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  const attachSizeObserver = useEffectEvent(() => {
+    const resizeObserver = createGridSizeObserver(globalRefs, setLimitsState,setGridSize);
+    return resizeObserver;
+  });
+  useEffect(() => {
+    const resizeObserver = attachSizeObserver();
+    return () => {
+      if (resizeObserver) resizeObserver.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    console.log(gridSize)
+  }, [gridSize]);
 
   // Track widgets detailes state change
-  useEffect(
-    () => {
-      widgetsDetailsRef.current = widgetsDetails;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [widgetsDetails]
+  const changeWidgetDetailsRef = useEffectEvent(
+    (widgets: WidgetDetailsType[]) => {
+      widgetsDetailsRef.current = widgets;
+    }
   );
+  useEffect(() => {
+    changeWidgetDetailsRef(widgetsDetails);
+  }, [widgetsDetails]);
 
   return (
     <>
@@ -95,7 +105,7 @@ export default function DynamicGrid() {
         }}
       >
         <div
-          className={`max-w-full w-full relative overflowx-x-hidden p-2 pr-0 select-none`}
+          className={`max-w-full w-full relative overflow-x-hidden overflow-y-auto p-2 pr-0 select-none`}
           ref={parentRef}
         >
           <DataSectionList />

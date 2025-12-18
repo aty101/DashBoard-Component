@@ -1,13 +1,25 @@
 import { COL_WIDTH, GAP, ROW_HEIGHT } from "../../grid-components/DynamicGrid";
-import { GlobalRefsType, LimitsType, SetStateType } from "../../types";
+import {
+  GlobalRefsType,
+  GridSizeType,
+  LimitsType,
+  SetStateType,
+} from "../../types";
 
 export function createGridSizeObserver(
   globalRefs: GlobalRefsType,
-  setLimitsState: SetStateType<LimitsType>
+  setLimitsState: SetStateType<LimitsType>,
+  setGridSize: SetStateType<GridSizeType>
 ) {
   const { limitsRef, parentRef } = globalRefs;
+  if (!parentRef.current) return;
   const resizeObserver = new ResizeObserver((entries) => {
     const { width, height } = entries[0].contentRect;
+    setGridSize({
+      COL_WIDTH: (width * 10) / 100,
+      ROW_HEIGHT: (height * 10) / 100,
+      GAP: 10,
+    });
 
     const maxCol = Math.floor((width + GAP) / (COL_WIDTH + GAP)) - 1;
     const maxRow = Math.floor((height + GAP) / (ROW_HEIGHT + GAP) - 1);
@@ -23,6 +35,6 @@ export function createGridSizeObserver(
     // You can use this sizeRef.current anywhere else without causing re-render
   });
 
-  if (parentRef.current) resizeObserver.observe(parentRef.current);
+  resizeObserver.observe(parentRef.current);
   return resizeObserver;
 }

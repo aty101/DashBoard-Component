@@ -41,8 +41,8 @@ export function useResize(
         globalRefs,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    
+    [currentWidgetRef, globalRefs, widgetsDetailsRef]
   );
 
   // Resize main logic
@@ -57,8 +57,8 @@ export function useResize(
         setWidgetsDetails,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    
+    [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
   );
 
   // Reset all used refs and placeholderstate
@@ -72,8 +72,8 @@ export function useResize(
         setWidgetsDetails,
       });
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    
+    [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
   );
 
   // Detect if the callbacks are ready or not

@@ -93,13 +93,13 @@ function overlaps(a: WidgetPlaceHolderType, b: WidgetDetailsType) {
 // Push collided widgets down recursively
 export function pushOverlappedWidgetsDown(
   source: WidgetPlaceHolderType,
-  widgets: WidgetDetailsType[],
-  visited = new Set<number>()
+  widgets: WidgetDetailsType[]
+
 ) {
   // 1. Find all widgets overlapping source
   const collisions = widgets
     .filter(
-      (w) => w.id !== source.id && !visited.has(w.id) && overlaps(source, w)
+      (w) => w.id !== source.id  && overlaps(source, w)
     )
     // IMPORTANT: sort by Y so stacking is correct
     .sort((a, b) => a.y - b.y);
@@ -109,8 +109,8 @@ export function pushOverlappedWidgetsDown(
   let nextY = source.y + source.height;
 
   for (const widget of collisions) {
-    visited.add(widget.id);
 
+    console.log(widget.id)
     // 2. Stack widgets vertically
     widget.y = nextY;
     nextY += widget.height;
@@ -124,8 +124,8 @@ export function pushOverlappedWidgetsDown(
         width: widget.width,
         height: widget.height,
       },
-      widgets,
-      visited
+      widgets
+   
     );
   }
 }
