@@ -1,8 +1,3 @@
-import {
-  COL_WIDTH,
-  GAP,
-  ROW_HEIGHT,
-} from "@/components/dynamic-grid/grid-components/DynamicGrid";
 import { CalcNewSizeParams } from "../resizingTypesAndParams";
 
 export function calcNewSize({
@@ -10,8 +5,10 @@ export function calcNewSize({
   currentWidget,
   initResizeData,
   maxCols,
-  maxRows,
+
+  gridSize,
 }: CalcNewSizeParams) {
+  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize;
   // Mouse movement since resize start
   const dx = e.clientX - initResizeData.cursorGlobX;
   const dy = e.clientY - initResizeData.cursorGlobY;
@@ -26,10 +23,9 @@ export function calcNewSize({
 
   // Check if the size didnt pass the min and max
   const maxWidth = maxCols - (currentWidget.x - 1);
-  const maxHeight = maxRows - (currentWidget.y - 1);
 
   const newWidth = Math.min(maxWidth, Math.max(gridWidth, 1));
-  const newHeight = Math.min(maxHeight, Math.max(gridHeight, 1));
+  const newHeight = Math.max(gridHeight, 1);
 
   // Placeholder current size
   const finalWidth = Math.round(newWidth);

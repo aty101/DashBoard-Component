@@ -1,54 +1,39 @@
 import {
-  COL_WIDTH,
-  GAP,
-  ROW_HEIGHT,
-} from "@/components/dynamic-grid/grid-components/DynamicGrid";
-
-import {
+  GridSizeType,
   WidgetDetailsType,
   WidgetPlaceHolderType,
 } from "@/components/dynamic-grid/types";
-
-// Check if two widgets overlap
-function widgetsOverlap(a: WidgetPlaceHolderType, b: WidgetDetailsType) {
-  return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
-  );
-}
 
 export function calcNewPos({
   e,
   offsetX,
   offsetY,
   maxCols,
-  maxRows,
   currentWidget,
+  gridSize,
 }: {
   e: PointerEvent;
   offsetX: number;
   offsetY: number;
   maxCols: number;
-  maxRows: number;
   currentWidget: WidgetDetailsType;
+  gridSize: GridSizeType;
 }) {
   // Calc the current cursor position in grid positioning
   // (convert pixel coords to grid units, considering cell size and gap)
+  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize;
   const cursorX = (e.clientX - offsetX) / (COL_WIDTH + GAP);
   const cursorY = (e.clientY - offsetY) / (ROW_HEIGHT + GAP);
 
   // Check the drag limits
   const maxX = maxCols - (currentWidget.width - 1);
-  const maxY = maxRows - (currentWidget.height - 1);
-  const newX = Math.max(0, Math.min(cursorX, maxX));
-  const newY = Math.max(0, Math.min(cursorY, maxY));
+
+  const newX = Math.max(0, Math.min(cursorX, maxX - 1));
+  const newY = Math.max(0, cursorY);
 
   // Assign the placeholder in a grid cell
   const finalPosX = Math.round(newX);
   const realY = Math.round(newY);
-  console.log(realY)
 
   return {
     newX,
@@ -63,144 +48,25 @@ export function findFinalY(
   widgets: WidgetDetailsType[],
   targetX: number
 ): number {
-  let y = 0;
+  let y = widget.y;
 
   while (true) {
     // Check if widget overlaps any existing widget at this y
-    const collisions = widgets.filter((w) => {
+    const collision = widgets.some((w) => {
       if (w.id === widget.id) return false;
       const horizontalOverlap =
         w.x < targetX + widget.width && w.x + w.width > targetX;
-      const verticalOverlap = w.y < y + widget.height && w.y + w.height > y;
+      const verticalOverlap =
+        w.y < y - 1 + widget.height && w.y + w.height > y - 1;
 
       return horizontalOverlap && verticalOverlap;
     });
 
-    if (collisions.length === 0) return y;
-
-    y = Math.max(...collisions.map((w) => w.y + w.height));
-  }
-}
-
-function overlaps(a: WidgetPlaceHolderType, b: WidgetDetailsType) {
-  return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
-  );
-}
-
-// Push collided widgets down recursively
-export function pushOverlappedWidgetsDown(
-  source: WidgetPlaceHolderType,
-  widgets: WidgetDetailsType[]
-) {
-  // 1. Find all widgets overlapping source
-  const collisions = widgets
-    .filter((w) => w.id !== source.id && overlaps(source, w))
-    // IMPORTANT: sort by Y so stacking is correct
-    .sort((a, b) => a.y - b.y);
-
-  if (collisions.length === 0) return;
-
-  let nextY = source.y + source.height;
-
-  for (const widget of collisions) {
-    console.log(widget.id);
-    // 2. Stack widgets vertically
-    widget.y = nextY;
-    nextY += widget.height;
-
-    // 3. Resolve secondary collisions
-    pushOverlappedWidgetsDown(
-      {
-        id: widget.id,
-        x: widget.x,
-        y: widget.y,
-        width: widget.width,
-        height: widget.height,
-      },
-      widgets
-    );
-  }
-}
-
-function binarySearchByY(arr: WidgetDetailsType[], y: number): number {
-  let left = 0,
-    right = arr.length - 1;
-  while (left <= right) {
-    const mid = (left + right) >> 1;
-    if (arr[mid].y < y) left = mid + 1;
-    else right = mid - 1;
-  }
-  return left;
-}
-
-export function pushOverlappedWidgetsDownOptimized(
-  source: WidgetPlaceHolderType,
-  widgetsByY: WidgetDetailsType[],
-  widgets: WidgetDetailsType[]
-) {
-  // Define search bounds
-  const searchStartIndex = binarySearchByY(widgetsByY, source.y - 150);
-  const searchEndIndex = binarySearchByY(
-    widgetsByY,
-    source.y + source.height + 150
-  );
-
-  // Narrow search range
-  const candidates = widgetsByY.slice(searchStartIndex, searchEndIndex);
-
-  // Filter candidates for overlap, excluding source
-  const collisions = candidates
-    .filter((w) => w.id !== source.id && overlaps(source, w))
-    .sort((a, b) => a.y - b.y);
-
-  if (collisions.length === 0) return;
-
-  let nextY = source.y + source.height;
-
-  for (const widget of collisions) {
-    widget.y = nextY;
-    nextY += widget.height;
-    
-
-    pushOverlappedWidgetsDownOptimized(
-      {
-        id: widget.id,
-        x: widget.x,
-        y: widget.y,
-        width: widget.width,
-        height: widget.height,
-      },
-      widgetsByY,
-      widgets
-    );
-  }
-}
-
-// Compact widgets upwards to fill empty vertical space
-export function autoPositionWidgets(id: number, widgets: WidgetDetailsType[]) {
-  // Sort widgets by x then y ascending
-  // widgets.sort((a, b) => a.x - b.x || a.y - b.y);
-
-  for (let i = 0; i < widgets.length; i++) {
-    const widget = widgets[i];
-    if (widget.id === id) continue;
-    let targetY = 0;
-
-    while (true) {
-      const collision = widgets.some((w) => {
-        if (w.id === widget.id) return false;
-        return widgetsOverlap({ ...widget, y: targetY }, w);
-      });
-
-      if (!collision) {
-        widget.y = targetY;
-        break;
-      }
-      targetY++;
+    if (!collision && y != 0) {
+      y--;
+      continue;
     }
+
+    return y;
   }
 }

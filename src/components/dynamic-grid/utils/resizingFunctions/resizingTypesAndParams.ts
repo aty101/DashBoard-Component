@@ -2,6 +2,7 @@ import { RefObject } from "react";
 
 import {
   GlobalRefsType,
+  GridSizeType,
   SetStateType,
   WidgetDetailsType,
   WidgetPlaceHolderType,
@@ -41,8 +42,9 @@ export type CalcNewSizeParams = {
   e: PointerEvent;
   initResizeData: ResizeInitObject;
   maxCols: number;
-  maxRows: number;
+
   currentWidget: WidgetDetailsType;
+  gridSize: GridSizeType;
 };
 
 export type ResizeHandlersRefsType = {

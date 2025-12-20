@@ -14,10 +14,8 @@ import { draggingStart } from "../utils/draggingFunctions/draggingStart";
 import { dragging } from "../utils/draggingFunctions/dragging/dragging";
 import { draggingEnd } from "../utils/draggingFunctions/draggingEnd";
 
-
 export function useDrag(
   globalRefs: GlobalRefsType,
-
   setWidgetPlaceholder: SetStateType<WidgetPlaceHolderType | null>,
   setWidgetsDetails: SetStateType<WidgetDetailsType[]>
 ) {
@@ -45,7 +43,7 @@ export function useDrag(
         handlersRefs,
       });
     },
-    
+
     [currentWidgetRef, widgetsDetailsRef]
   );
 
@@ -60,24 +58,20 @@ export function useDrag(
         setWidgetsDetails,
       });
     },
-    
+
     [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
   );
 
   // Handle (the resset of used refs and states, remove eventlisteners)
-  const handleDraggingEnd = useCallback(
-    () => {
-      draggingEnd({
-        draggingOffsetsRef,
-        handlersRefs,
-        globalRefs,
-        setWidgetsDetails,
-        setWidgetPlaceholder,
-      });
-    },
-    
-    [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
-  );
+  const handleDraggingEnd = useCallback(() => {
+    draggingEnd({
+      draggingOffsetsRef,
+      handlersRefs,
+      globalRefs,
+      setWidgetsDetails,
+      setWidgetPlaceholder,
+    });
+  }, [globalRefs, setWidgetPlaceholder, setWidgetsDetails]);
 
   // Detect if the handlers are ready or not
   useEffect(() => {
@@ -86,8 +80,6 @@ export function useDrag(
       handleDraggingEnd,
     };
   }, [handleDragging, handleDraggingEnd]);
-
-
 
   return handleDraggingStart;
 }

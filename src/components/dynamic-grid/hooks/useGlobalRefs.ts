@@ -1,5 +1,9 @@
 import { useMemo, useRef } from "react";
-import { LimitsType, WidgetDetailsType, WidgetPlaceHolderType } from "../types";
+import {
+  GridSizeType,
+  WidgetDetailsType,
+  WidgetPlaceHolderType,
+} from "../types";
 
 export function useGlobalRefs(widgetsDetails: WidgetDetailsType[]) {
   /* ...REFS DECLARATION... */
@@ -20,7 +24,13 @@ export function useGlobalRefs(widgetsDetails: WidgetDetailsType[]) {
   const animationId = useRef<number>(null);
 
   // Save the grid limits to be used in responsivablity
-  const limitsRef = useRef<LimitsType>({ maxCol: 0, maxRow: 0 });
+  const maxColRef = useRef<number>(0);
+
+  const gridSize = useRef<GridSizeType>({
+    COL_WIDTH: 0,
+    ROW_HEIGHT: 0,
+    GAP: 8,
+  });
 
   return useMemo(() => {
     return {
@@ -29,7 +39,8 @@ export function useGlobalRefs(widgetsDetails: WidgetDetailsType[]) {
       widgetPlaceHolderRef,
       widgetsDetailsRef,
       animationId,
-      limitsRef,
+      maxColRef,
+      gridSize,
     };
   }, []);
 }

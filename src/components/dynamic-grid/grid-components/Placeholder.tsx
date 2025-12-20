@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { COL_WIDTH, GAP, ROW_HEIGHT } from "./DynamicGrid";
+
 import { GridContext } from "./GridContextProvider";
 
 export default function Placeholder() {
@@ -8,9 +8,11 @@ export default function Placeholder() {
   if (!context) {
     throw new Error("useGridContext must be used within GridContextProvider");
   }
-  const { widgetPlaceholder } = context;
+  const { widgetPlaceholder, gridSize } = context;
 
-  if (!widgetPlaceholder) return;
+  if (!widgetPlaceholder || !gridSize) return;
+
+  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize;
   /* ...DEFINE THE PLACEHOLDER STYLES... */
 
   // Calc the placeholder size

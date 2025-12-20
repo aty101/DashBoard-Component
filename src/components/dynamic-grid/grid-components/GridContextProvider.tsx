@@ -1,9 +1,14 @@
 import { createContext } from "react";
-import { WidgetDetailsType, WidgetPlaceHolderType } from "../types";
+import {
+  GridSizeType,
+  WidgetDetailsType,
+  WidgetPlaceHolderType,
+} from "../types";
 
 export type GridContextProps = {
   widgetPlaceholder: WidgetPlaceHolderType | null;
   widgetsDetails: WidgetDetailsType[];
+  gridSize: GridSizeType ;
   handleDraggingStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
   handleResizeStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
 };

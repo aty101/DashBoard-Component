@@ -12,12 +12,15 @@ export const draggingStart = ({
   const widgetRect = e.currentTarget.getBoundingClientRect();
 
   // Get the grid bounds
-  const parentRect = e.currentTarget.parentElement?.getBoundingClientRect();
-
+  const parent = e.currentTarget.parentElement;
+  if (!parent) return;
+  const parentRect = parent.getBoundingClientRect();
+ 
+ 
   // Calc cursor offset from the widget for smooth drag
   // (parentRect add to solve a glitch came of the parent shifted pos)
-  const offsetX = e.clientX - widgetRect.left + (parentRect?.left ?? 0);
-  const offsetY = e.clientY - widgetRect.top + (parentRect?.top ?? 0);
+  const offsetX = e.clientX - widgetRect.left + parentRect.left;
+  const offsetY = e.clientY - widgetRect.top  + parentRect.top;
 
   // Set the cursor offset ref
   draggingOffsetsRef.current = {

@@ -38,13 +38,13 @@ export type CalcNewPos = {
   offsetX: number;
   offsetY: number;
   maxCols: number;
-  maxRows: number;
+
   currentWidget: WidgetDetailsType;
   widgetsDetails: WidgetDetailsType[];
 };
 export type CalcRePos = {
   maxCols: number;
-  maxRows: number;
+
   currentWidget: WidgetDetailsType;
   widgetsDetails: WidgetDetailsType[];
 };

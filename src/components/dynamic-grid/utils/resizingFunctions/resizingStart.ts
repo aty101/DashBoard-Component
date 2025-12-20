@@ -1,4 +1,3 @@
-import { COL_WIDTH, GAP, ROW_HEIGHT } from "../../grid-components/DynamicGrid";
 import { ResizingStartParams } from "./resizingTypesAndParams";
 
 export const resizeStart = ({
@@ -8,10 +7,11 @@ export const resizeStart = ({
   globalRefs,
 }: ResizingStartParams) => {
   // Fetch needed refs
-  const { currentWidgetRef } = globalRefs;
+  const { currentWidgetRef, gridSize } = globalRefs;
 
-  if (!currentWidgetRef.current) return;
+  if (!currentWidgetRef.current || !gridSize.current) return;
 
+  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize.current;
   // Capture the pointer so resize stays smooth even if the cursor leaves the element
   e.currentTarget.setPointerCapture(e.pointerId);
 

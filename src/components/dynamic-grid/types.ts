@@ -23,18 +23,14 @@ export type GlobalRefsType = {
   widgetPlaceHolderRef: RefObject<WidgetPlaceHolderType | null>;
   widgetsDetailsRef: RefObject<WidgetDetailsType[]>;
   animationId: RefObject<number | null>;
-  limitsRef: RefObject<{
-    maxCol: number;
-    maxRow: number;
-  }>;
+  maxColRef: RefObject<number>;
+  gridSize: RefObject<GridSizeType>;
 };
 
 export type GridSizeType = {
   COL_WIDTH: number;
   ROW_HEIGHT: number;
   GAP: number;
-} | null;
-
-export type LimitsType = { maxCol: number; maxRow: number };
+};
 
 export type SetStateType<T> = Dispatch<SetStateAction<T>>;

@@ -2,7 +2,6 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import {
   GridSizeType,
-  LimitsType,
   WidgetDetailsType,
   WidgetPlaceHolderType,
 } from "../types";
@@ -13,10 +12,23 @@ import Placeholder from "./Placeholder";
 import DataSectionList from "./DataSectionList";
 import GridContextProvider from "./GridContextProvider";
 import { createGridSizeObserver } from "../utils/responsiveGridFunctions/createGridSizeObserver";
+import { widgetsCompaction } from "../utils/collisionFunctions/widgetsCompaction";
 
-export const COL_WIDTH = 150;
-export const ROW_HEIGHT = 150;
-export const GAP = 10;
+export function handleColsLimitInPlace(
+  widgets: WidgetDetailsType[],
+  cols: number
+) {
+  // 1️⃣ Clamp widgets inside column limit
+  for (const w of widgets) {
+    const maxX = cols - w.width;
+    if (w.x > maxX) {
+      w.x = Math.max(0, maxX);
+    }
+  }
+
+  // 2️⃣ Resolve collisions AFTER clamping
+  widgetsCompaction(widgets);
+}
 
 export default function DynamicGrid() {
   /* ...STATES DECLARATION... */
@@ -41,12 +53,13 @@ export default function DynamicGrid() {
   const [widgetPlaceholder, setWidgetPlaceholder] =
     useState<WidgetPlaceHolderType | null>(null);
 
-  const [, /*limitsState*/ setLimitsState] = useState<LimitsType>({
-    maxCol: 0,
-    maxRow: 0,
-  });
+  const [maxColState, setMaxColState] = useState<number>(0);
 
-  const [gridSize, setGridSize] = useState<GridSizeType>(null);
+  const [gridSize, setGridSize] = useState<GridSizeType>({
+    COL_WIDTH: 0,
+    ROW_HEIGHT: 0,
+    GAP: 8,
+  });
 
   // Fetch all global refs to be passed to handlers
   const globalRefs = useGlobalRefs(widgetsDetails);
@@ -71,7 +84,11 @@ export default function DynamicGrid() {
 
   // Attach size observer to the grid div
   const attachSizeObserver = useEffectEvent(() => {
-    const resizeObserver = createGridSizeObserver(globalRefs, setLimitsState,setGridSize);
+    const resizeObserver = createGridSizeObserver(
+      globalRefs,
+      setMaxColState,
+      setGridSize
+    );
     return resizeObserver;
   });
   useEffect(() => {
@@ -81,8 +98,8 @@ export default function DynamicGrid() {
     };
   }, []);
   useEffect(() => {
-    console.log(gridSize)
-  }, [gridSize]);
+    console.log(maxColState);
+  }, [maxColState, widgetsDetailsRef]);
 
   // Track widgets detailes state change
   const changeWidgetDetailsRef = useEffectEvent(
@@ -100,12 +117,13 @@ export default function DynamicGrid() {
         value={{
           widgetPlaceholder,
           widgetsDetails,
+          gridSize,
           handleDraggingStart,
           handleResizeStart,
         }}
       >
         <div
-          className={`max-w-full w-full relative overflow-x-hidden overflow-y-auto p-2 pr-0 select-none`}
+          className={`max-w-full w-[75%] mx-auto border-x border-gray-500 relative overflow-x-hidden overflow-y-auto p-2  select-none`}
           ref={parentRef}
         >
           <DataSectionList />

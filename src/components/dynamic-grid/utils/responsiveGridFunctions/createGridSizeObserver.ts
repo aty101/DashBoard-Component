@@ -1,37 +1,52 @@
-import { COL_WIDTH, GAP, ROW_HEIGHT } from "../../grid-components/DynamicGrid";
-import {
-  GlobalRefsType,
-  GridSizeType,
-  LimitsType,
-  SetStateType,
-} from "../../types";
+import { GlobalRefsType, GridSizeType, SetStateType } from "../../types";
 
 export function createGridSizeObserver(
   globalRefs: GlobalRefsType,
-  setLimitsState: SetStateType<LimitsType>,
+  setLimitsState: SetStateType<number>,
   setGridSize: SetStateType<GridSizeType>
 ) {
-  const { limitsRef, parentRef } = globalRefs;
+  const { maxColRef, parentRef, gridSize } = globalRefs;
   if (!parentRef.current) return;
   const resizeObserver = new ResizeObserver((entries) => {
+    const pageWidth = window.innerWidth;
+
     const { width, height } = entries[0].contentRect;
+
+    const GAP = gridSize.current.GAP;
+
+    let maxCol;
+
+    if (pageWidth >= 1530) {
+      maxCol = 12;
+    } else if (pageWidth > 1330) {
+      maxCol = 10;
+    } else if (pageWidth > 1100) {
+      maxCol = 6;
+    } else if (pageWidth > 960) {
+      maxCol = 4;
+    } else {
+      maxCol = 2;
+    }
+
+    const COL_WIDTH = (width - GAP * (maxCol - 1)) / maxCol;
+    const ROW_HEIGHT = COL_WIDTH * 0.5;
+
+    gridSize.current = {
+      COL_WIDTH,
+      ROW_HEIGHT,
+      GAP,
+    };
     setGridSize({
-      COL_WIDTH: (width * 10) / 100,
-      ROW_HEIGHT: (height * 10) / 100,
-      GAP: 10,
+      COL_WIDTH,
+      ROW_HEIGHT,
+      GAP,
     });
 
-    const maxCol = Math.floor((width + GAP) / (COL_WIDTH + GAP)) - 1;
-    const maxRow = Math.floor((height + GAP) / (ROW_HEIGHT + GAP) - 1);
-    const newLimits = { maxCol, maxRow };
+    const newMaxCol = maxCol;
 
-    limitsRef.current = newLimits;
+    maxColRef.current = newMaxCol;
 
-    setLimitsState((prev) =>
-      prev.maxCol === newLimits.maxCol && prev.maxRow === newLimits.maxRow
-        ? prev
-        : newLimits
-    );
+    setLimitsState((prev) => (prev === maxCol ? prev : maxCol));
     // You can use this sizeRef.current anywhere else without causing re-render
   });
 

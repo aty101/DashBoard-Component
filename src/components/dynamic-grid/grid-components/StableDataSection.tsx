@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from "react";
 import { WidgetDetailsType } from "../types";
-import { COL_WIDTH, GAP, ROW_HEIGHT } from "./DynamicGrid";
+
 import { GridContext } from "./GridContextProvider";
 
 type DataSectionProps = {
@@ -13,8 +13,13 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
   if (!context) {
     throw new Error("useGridContext must be used within GridContextProvider");
   }
-  const { handleDraggingStart, handleResizeStart } = context;
+  const { gridSize, handleDraggingStart, handleResizeStart } = context;
 
+  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize ?? {
+    COL_WIDTH: 0,
+    ROW_HEIGHT: 0,
+    GAP: 0,
+  };
   /* ...WIDGET STYLES... */
 
   // Calc current size in grid units
@@ -57,16 +62,18 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
         transform,
         zIndex,
         cursor,
-        transitionDuration: isDragged ? "0s" : "0.3s",
+        transitionDuration: isDragged ? "0s" : "0.2s",
       }}
-      className="absolute bg-blue-100  flex justify-end items-end p-1 select-none border border-black "
+      className="absolute bg-blue-100  flex justify-end items-end p-1 select-none border border-black text-3xl"
     >
       <div className="w-full h-full relative  flex justify-center items-center">
-        <h2 className="text-3xl capitalize text-black ">{widget.content}</h2>
+        <h2 className=" capitalize text-black ">{widget.content}</h2>
         <span
-          className=" absolute border-b-2 border-r-2 bottom-0 right-0 border-black w-[17px] h-[17px] cursor-se-resize"
           onPointerDown={resizePointerDown}
-        ></span>
+          className="absolute  bottom-0 right-0  w-5 h-5 cursor-se-resize"
+        >
+          <span className="absolute bottom-0 right-0 border-black border-b-2 border-r-2  w-2.5 h-2.5"></span>
+        </span>
       </div>
     </section>
   );
