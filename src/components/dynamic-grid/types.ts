@@ -1,4 +1,4 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
+import { Dispatch, ReactNode, RefObject, SetStateAction } from "react";
 
 export type WidgetDetailsType = {
   id: number;
@@ -6,7 +6,7 @@ export type WidgetDetailsType = {
   y: number;
   width: number;
   height: number;
-  content: string;
+  content: ReactNode;
 };
 
 export type WidgetPlaceHolderType = {

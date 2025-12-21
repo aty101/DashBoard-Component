@@ -84,7 +84,7 @@ export const dragging = ({
       ].sort((a, b) => a.y - b.y);
       // Step 6: Auto position widgets to compact
 
-      widgetsCompaction(updatedWidgets);
+      widgetsCompaction(currentWidget, updatedWidgets);
 
       const lastWidgets = updatedWidgets.map((w) =>
         w.id === widgetPlaceHolder.id ? { ...w, x: newX, y: newY } : w

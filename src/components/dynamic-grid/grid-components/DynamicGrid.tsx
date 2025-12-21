@@ -1,5 +1,10 @@
 "use client";
-import { useEffect, useEffectEvent, useState } from "react";
+import React, {
+  PropsWithChildren,
+  useEffect,
+  useEffectEvent,
+  useState,
+} from "react";
 import {
   GridSizeType,
   WidgetDetailsType,
@@ -14,40 +19,58 @@ import GridContextProvider from "./GridContextProvider";
 import { createGridSizeObserver } from "../utils/responsiveGridFunctions/createGridSizeObserver";
 import { widgetsCompaction } from "../utils/collisionFunctions/widgetsCompaction";
 
-export function handleColsLimitInPlace(
+export function handleColsChange(
   widgets: WidgetDetailsType[],
-  cols: number
+  cols: number,
+  currentWidget: WidgetDetailsType | null
 ) {
-  // 1️⃣ Clamp widgets inside column limit
+  let hasOverflow = false;
+
+  // 1️⃣ Clamp widgets that exceed new cols
   for (const w of widgets) {
     const maxX = cols - w.width;
+
     if (w.x > maxX) {
-      w.x = Math.max(0, maxX);
+      w.x = Math.max(w.x, maxX);
+      hasOverflow = true;
     }
   }
 
-  // 2️⃣ Resolve collisions AFTER clamping
-  widgetsCompaction(widgets);
+  // 2️⃣ Run compaction ONCE if needed
+  if (hasOverflow) {
+    widgetsCompaction(currentWidget, widgets);
+  }
 }
 
-export default function DynamicGrid() {
+export default function DynamicGrid({ children }: PropsWithChildren) {
   /* ...STATES DECLARATION... */
+  let state: WidgetDetailsType[] = [];
+  if (children) {
+    let id = 1;
+    let initX = 0;
+    let initY = 0;
+    const width = 2;
+    const height = 2;
+    const childrenArray = React.Children.toArray(children);
+    console.log(childrenArray);
+    state = childrenArray.map((child) => {
+      const widget: WidgetDetailsType = {
+        id,
+        x: initX,
+        y: initY,
+        width,
+        height,
+        content: child,
+      };
+      id++;
+      initX += 2;
 
+      return widget;
+    });
+  }
   // Widgets state
-  const [widgetsDetails, setWidgetsDetails] = useState<WidgetDetailsType[]>([
-    { id: 1, x: 0, y: 0, width: 2, height: 1, content: "data1" },
-    { id: 2, x: 0, y: 1, width: 2, height: 1, content: "data2" },
-
-    { id: 3, x: 2, y: 0, width: 1, height: 2, content: "data3" },
-    { id: 4, x: 3, y: 0, width: 3, height: 2, content: "data4" },
-
-    // new widgets (stacked safely below)
-    { id: 5, x: 0, y: 2, width: 2, height: 1, content: "data5" },
-    { id: 6, x: 2, y: 2, width: 2, height: 1, content: "data6" },
-
-    { id: 7, x: 0, y: 3, width: 3, height: 1, content: "data7" },
-    { id: 8, x: 4, y: 2, width: 3, height: 2, content: "data8" },
-  ]);
+  const [widgetsDetails, setWidgetsDetails] =
+    useState<WidgetDetailsType[]>(state);
 
   // Current active widget placeholder and final position
   const [widgetPlaceholder, setWidgetPlaceholder] =
@@ -97,9 +120,6 @@ export default function DynamicGrid() {
       if (resizeObserver) resizeObserver.disconnect();
     };
   }, []);
-  useEffect(() => {
-    console.log(maxColState);
-  }, [maxColState, widgetsDetailsRef]);
 
   // Track widgets detailes state change
   const changeWidgetDetailsRef = useEffectEvent(
@@ -110,6 +130,11 @@ export default function DynamicGrid() {
   useEffect(() => {
     changeWidgetDetailsRef(widgetsDetails);
   }, [widgetsDetails]);
+
+  // useEffect(() => {
+  //   handleColsChange(widgetsDetailsRef.current, maxColState, null);
+  //   console.log(maxColState)
+  // }, [maxColState, widgetsDetailsRef]);
 
   return (
     <>
@@ -123,7 +148,7 @@ export default function DynamicGrid() {
         }}
       >
         <div
-          className={`max-w-full w-[75%] mx-auto border-x border-gray-500 relative overflow-x-hidden overflow-y-auto p-2  select-none`}
+          className={`max-w-full w-full mx-auto border-x border-gray-500 relative overflow-x-hidden overflow-y-auto p-2  select-none`}
           ref={parentRef}
         >
           <DataSectionList />

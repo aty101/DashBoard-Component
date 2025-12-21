@@ -64,10 +64,10 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
         cursor,
         transitionDuration: isDragged ? "0s" : "0.2s",
       }}
-      className="absolute bg-blue-100  flex justify-end items-end p-1 select-none border border-black text-3xl"
+      className="absolute bg-blue-100   p-1 select-none border border-black text-3xl"
     >
-      <div className="w-full h-full relative  flex justify-center items-center">
-        <h2 className=" capitalize text-black ">{widget.content}</h2>
+      <div className="w-full h-full relative  ">
+        {widget.content}
         <span
           onPointerDown={resizePointerDown}
           className="absolute  bottom-0 right-0  w-5 h-5 cursor-se-resize"

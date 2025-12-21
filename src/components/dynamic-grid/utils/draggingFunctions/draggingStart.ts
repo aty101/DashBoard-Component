@@ -35,5 +35,6 @@ export const draggingStart = ({
       "pointerup",
       handlersRefs.current.handleDraggingEnd
     );
+  
   }
 };

@@ -11,6 +11,7 @@ export type GridContextProps = {
   gridSize: GridSizeType ;
   handleDraggingStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
   handleResizeStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
+  
 };
 
 type ProviderProps = {

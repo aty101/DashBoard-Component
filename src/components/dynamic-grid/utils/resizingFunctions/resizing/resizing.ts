@@ -62,6 +62,20 @@ export const resize = ({
       // Step 3: Create placeholder with finalX and finalY
       // Set the new placeholder object
 
+      // Step 5: Add moved widget back with updated pos
+      const updatedWidgets = [
+        ...widgetsCopy,
+        { ...currentWidget, width: finalWidth, height: finalHeight },
+      ];
+      // Step 6: Auto position widgets to compact
+
+      widgetsCompaction(currentWidget, updatedWidgets);
+
+      const lastWidgets = updatedWidgets.map((w) =>
+        w.id === currentWidget.id
+          ? { ...w, width: newWidth, height: newHeight }
+          : w
+      );
       const widgetPlaceholder = {
         id: currentWidget.id,
         x: currentWidget.x,
@@ -72,21 +86,6 @@ export const resize = ({
 
       // Set the placeholder ref to be used in the end of resize
       widgetPlaceHolderRef.current = widgetPlaceholder;
-
-      // Step 5: Add moved widget back with updated pos
-      const updatedWidgets = [
-        ...widgetsCopy,
-        { ...currentWidget, width: finalWidth, height: finalHeight },
-      ];
-      // Step 6: Auto position widgets to compact
-
-      widgetsCompaction(updatedWidgets);
-
-      const lastWidgets = updatedWidgets.map((w) =>
-        w.id === widgetPlaceholder.id
-          ? { ...w, width: newWidth, height: newHeight }
-          : w
-      );
       // Step 7: Update state
       setWidgetPlaceholder(widgetPlaceholder);
       setWidgetsDetails(lastWidgets);

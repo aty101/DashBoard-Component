@@ -37,5 +37,6 @@ export const resizeStart = ({
   if (handlersRefs.current) {
     window.addEventListener("pointermove", handlersRefs.current.handleResize);
     window.addEventListener("pointerup", handlersRefs.current.handleResizeEnd);
+    
   }
 };

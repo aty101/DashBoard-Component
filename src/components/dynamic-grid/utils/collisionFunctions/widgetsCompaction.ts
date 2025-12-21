@@ -2,7 +2,10 @@ import { WidgetDetailsType } from "../../types";
 import { overlaps } from "./overlaps";
 
 // Compact widgets upwards to fill empty vertical space
-export function widgetsCompaction( widgets: WidgetDetailsType[]) {
+export function widgetsCompaction(
+  currentWidget: WidgetDetailsType | null,
+  widgets: WidgetDetailsType[]
+) {
   // Sort widgets by x then y ascending
   // widgets.sort((a, b) => a.x - b.x || a.y - b.y);
   for (let i = 0; i < widgets.length; i++) {
@@ -21,6 +24,9 @@ export function widgetsCompaction( widgets: WidgetDetailsType[]) {
         continue;
       }
       widget.y = targetY;
+      if (currentWidget && currentWidget.id === widget.id) {
+        currentWidget.y = targetY;
+      }
       break;
     }
   }

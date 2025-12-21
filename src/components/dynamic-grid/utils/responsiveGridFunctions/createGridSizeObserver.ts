@@ -10,7 +10,7 @@ export function createGridSizeObserver(
   const resizeObserver = new ResizeObserver((entries) => {
     const pageWidth = window.innerWidth;
 
-    const { width, height } = entries[0].contentRect;
+    const { width } = entries[0].contentRect;
 
     const GAP = gridSize.current.GAP;
 
@@ -29,7 +29,7 @@ export function createGridSizeObserver(
     }
 
     const COL_WIDTH = (width - GAP * (maxCol - 1)) / maxCol;
-    const ROW_HEIGHT = COL_WIDTH * 0.5;
+    const ROW_HEIGHT = 150;
 
     gridSize.current = {
       COL_WIDTH,

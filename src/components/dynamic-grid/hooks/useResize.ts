@@ -41,7 +41,7 @@ export function useResize(
         globalRefs,
       });
     },
-    
+
     [currentWidgetRef, globalRefs, widgetsDetailsRef]
   );
 
@@ -57,24 +57,20 @@ export function useResize(
         setWidgetsDetails,
       });
     },
-    
+
     [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
   );
 
   // Reset all used refs and placeholderstate
-  const handleResizeEnd = useCallback(
-    () => {
-      resizeEnd({
-        resizedItemRef,
-        handlersRefs,
-        globalRefs,
-        setWidgetPlaceholder,
-        setWidgetsDetails,
-      });
-    },
-    
-    [globalRefs, setWidgetPlaceholder, setWidgetsDetails]
-  );
+  const handleResizeEnd = useCallback(() => {
+    resizeEnd({
+      resizedItemRef,
+      handlersRefs,
+      globalRefs,
+      setWidgetPlaceholder,
+      setWidgetsDetails,
+    });
+  }, [globalRefs, setWidgetPlaceholder, setWidgetsDetails]);
 
   // Detect if the callbacks are ready or not
   useEffect(() => {
@@ -84,5 +80,5 @@ export function useResize(
     };
   }, [handleResize, handleResizeEnd]);
 
-  return handleResizeStart;
+  return  handleResizeStart;
 }
