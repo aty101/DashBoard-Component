@@ -1,10 +1,5 @@
 "use client";
-import React, {
-  PropsWithChildren,
-  useEffect,
-  useEffectEvent,
-  useState,
-} from "react";
+import React, { PropsWithChildren, ReactNode, useState } from "react";
 import {
   GridSizeType,
   WidgetDetailsType,
@@ -16,61 +11,16 @@ import { useResize } from "../hooks/useResize";
 import Placeholder from "./Placeholder";
 import DataSectionList from "./DataSectionList";
 import GridContextProvider from "./GridContextProvider";
-import { createGridSizeObserver } from "../utils/responsiveGridFunctions/createGridSizeObserver";
-import { widgetsCompaction } from "../utils/collisionFunctions/widgetsCompaction";
-
-export function handleColsChange(
-  widgets: WidgetDetailsType[],
-  cols: number,
-  currentWidget: WidgetDetailsType | null
-) {
-  let hasOverflow = false;
-
-  // 1️⃣ Clamp widgets that exceed new cols
-  for (const w of widgets) {
-    const maxX = cols - w.width;
-
-    if (w.x > maxX) {
-      w.x = Math.max(w.x, maxX);
-      hasOverflow = true;
-    }
-  }
-
-  // 2️⃣ Run compaction ONCE if needed
-  if (hasOverflow) {
-    widgetsCompaction(currentWidget, widgets);
-  }
-}
+import { useCreateObserver } from "../hooks/useCreateObserver";
+import { useWidgetDetails } from "../hooks/useWidgetDetails";
+import { createInitState } from "../utils/createInitState";
 
 export default function DynamicGrid({ children }: PropsWithChildren) {
   /* ...STATES DECLARATION... */
-  let state: WidgetDetailsType[] = [];
-  if (children) {
-    let id = 1;
-    let initX = 0;
-    let initY = 0;
-    const width = 2;
-    const height = 2;
-    const childrenArray = React.Children.toArray(children);
-    console.log(childrenArray);
-    state = childrenArray.map((child) => {
-      const widget: WidgetDetailsType = {
-        id,
-        x: initX,
-        y: initY,
-        width,
-        height,
-        content: child,
-      };
-      id++;
-      initX += 2;
-
-      return widget;
-    });
-  }
+  const initState = createInitState(children);
   // Widgets state
   const [widgetsDetails, setWidgetsDetails] =
-    useState<WidgetDetailsType[]>(state);
+    useState<WidgetDetailsType[]>(initState);
 
   // Current active widget placeholder and final position
   const [widgetPlaceholder, setWidgetPlaceholder] =
@@ -106,35 +56,10 @@ export default function DynamicGrid({ children }: PropsWithChildren) {
   /* ...EFFECT TO CAPTURE  MEMORY LOCATIONS AND STATES CHANGES... */
 
   // Attach size observer to the grid div
-  const attachSizeObserver = useEffectEvent(() => {
-    const resizeObserver = createGridSizeObserver(
-      globalRefs,
-      setMaxColState,
-      setGridSize
-    );
-    return resizeObserver;
-  });
-  useEffect(() => {
-    const resizeObserver = attachSizeObserver();
-    return () => {
-      if (resizeObserver) resizeObserver.disconnect();
-    };
-  }, []);
+  useCreateObserver(globalRefs, setMaxColState, setGridSize);
 
   // Track widgets detailes state change
-  const changeWidgetDetailsRef = useEffectEvent(
-    (widgets: WidgetDetailsType[]) => {
-      widgetsDetailsRef.current = widgets;
-    }
-  );
-  useEffect(() => {
-    changeWidgetDetailsRef(widgetsDetails);
-  }, [widgetsDetails]);
-
-  // useEffect(() => {
-  //   handleColsChange(widgetsDetailsRef.current, maxColState, null);
-  //   console.log(maxColState)
-  // }, [maxColState, widgetsDetailsRef]);
+  useWidgetDetails(widgetsDetailsRef, widgetsDetails);
 
   return (
     <>

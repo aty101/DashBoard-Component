@@ -1,5 +1,4 @@
 import { useContext } from "react";
-
 import { GridContext } from "./GridContextProvider";
 
 export default function Placeholder() {

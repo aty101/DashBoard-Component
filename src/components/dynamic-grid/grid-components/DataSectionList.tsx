@@ -1,7 +1,21 @@
 import { useContext } from "react";
 import { StableDataSection } from "./StableDataSection";
 import { GridContext } from "./GridContextProvider";
-import { WidgetDetailsType } from "../types";
+import { WidgetDetailsType, WidgetPlaceHolderType } from "../types";
+
+const isDragged = (
+  widget: WidgetDetailsType,
+  widgetPlaceholder: WidgetPlaceHolderType | null
+) => {
+  if (widgetPlaceholder) {
+    return (
+      widget.id === widgetPlaceholder.id
+      // (widget.x !== widgetPlaceholder.x || widget.y !== widgetPlaceholder.y)
+    );
+  } else {
+    return false;
+  }
+};
 
 export default function DataSectionList() {
   const context = useContext(GridContext);
@@ -9,16 +23,6 @@ export default function DataSectionList() {
     throw new Error("useGridContext must be used within GridContextProvider");
   }
   const { widgetsDetails, widgetPlaceholder } = context;
-  const isDragged = (widget: WidgetDetailsType) => {
-    if (widgetPlaceholder) {
-      return (
-        widget.id === widgetPlaceholder.id 
-        // (widget.x !== widgetPlaceholder.x || widget.y !== widgetPlaceholder.y)
-      );
-    } else {
-      return false;
-    }
-  };
 
   return (
     <>
@@ -27,7 +31,7 @@ export default function DataSectionList() {
           <StableDataSection
             key={widget.id}
             widget={widget}
-            isDragged={isDragged(widget)}
+            isDragged={isDragged(widget, widgetPlaceholder)}
           />
         );
       })}
