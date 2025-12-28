@@ -8,10 +8,7 @@ const isDragged = (
   widgetPlaceholder: WidgetPlaceHolderType | null
 ) => {
   if (widgetPlaceholder) {
-    return (
-      widget.id === widgetPlaceholder.id
-      // (widget.x !== widgetPlaceholder.x || widget.y !== widgetPlaceholder.y)
-    );
+    return widget.id === widgetPlaceholder.id;
   } else {
     return false;
   }

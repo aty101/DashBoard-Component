@@ -10,7 +10,7 @@ import {
 export default function Home() {
   return (
     <DynamicGrid>
-      <SalesOverview revenue={124000} changePct={12.4} />
+      <SalesOverview min-width={3} min-height={3} revenue={124000} changePct={12.4} />
 
       <SystemHealth cpu={63} memory={78} disk={41} />
 

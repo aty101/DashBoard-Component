@@ -12,7 +12,7 @@ export function createGridSizeObserver(
 
     const { width } = entries[0].contentRect;
 
-    const GAP = gridSize.current.GAP;
+    const GAP = 8;
 
     let maxCol;
 
@@ -47,7 +47,6 @@ export function createGridSizeObserver(
     maxColRef.current = newMaxCol;
 
     setLimitsState((prev) => (prev === maxCol ? prev : maxCol));
-    // You can use this sizeRef.current anywhere else without causing re-render
   });
 
   resizeObserver.observe(parentRef.current);

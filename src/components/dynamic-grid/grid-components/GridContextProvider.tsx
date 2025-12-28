@@ -8,10 +8,9 @@ import {
 export type GridContextProps = {
   widgetPlaceholder: WidgetPlaceHolderType | null;
   widgetsDetails: WidgetDetailsType[];
-  gridSize: GridSizeType ;
+  gridSize: GridSizeType;
   handleDraggingStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
   handleResizeStart: (id: number, e: React.PointerEvent<HTMLElement>) => void;
-  
 };
 
 type ProviderProps = {

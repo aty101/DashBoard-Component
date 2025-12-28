@@ -1,5 +1,5 @@
 "use client";
-import React, { PropsWithChildren, ReactNode, useState } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import {
   GridSizeType,
   WidgetDetailsType,
@@ -16,8 +16,10 @@ import { useWidgetDetails } from "../hooks/useWidgetDetails";
 import { createInitState } from "../utils/createInitState";
 
 export default function DynamicGrid({ children }: PropsWithChildren) {
+  const [, setMaxColState] = useState<number>(0);
   /* ...STATES DECLARATION... */
   const initState = createInitState(children);
+
   // Widgets state
   const [widgetsDetails, setWidgetsDetails] =
     useState<WidgetDetailsType[]>(initState);
@@ -25,8 +27,6 @@ export default function DynamicGrid({ children }: PropsWithChildren) {
   // Current active widget placeholder and final position
   const [widgetPlaceholder, setWidgetPlaceholder] =
     useState<WidgetPlaceHolderType | null>(null);
-
-  const [maxColState, setMaxColState] = useState<number>(0);
 
   const [gridSize, setGridSize] = useState<GridSizeType>({
     COL_WIDTH: 0,
@@ -73,7 +73,7 @@ export default function DynamicGrid({ children }: PropsWithChildren) {
         }}
       >
         <div
-          className={`max-w-full w-full mx-auto border-x border-gray-500 relative overflow-x-hidden overflow-y-auto p-2  select-none`}
+          className={`bg-transparent max-w-full w-full mx-auto border-x border-gray-500 relative overflow-x-hidden overflow-y-auto p-2  select-none`}
           ref={parentRef}
         >
           <DataSectionList />

@@ -7,22 +7,31 @@ export function createInitState(children: ReactNode) {
     let id = 1;
     let initX = 0;
     const initY = 0;
-    const width = 2;
-    const height = 2;
 
     const childrenArray = React.Children.toArray(children);
-    console.log(childrenArray);
+
     state = childrenArray.map((child) => {
+      const minWidth = child._owner.props["min-width"]
+        ? parseInt(child._owner.props["min-width"])
+        : 2;
+      const minHeight = child._owner.props["min-height"]
+        ? parseInt(child._owner.props["min-height"])
+        : 1;
+
+      const width = Math.max(2, minWidth);
+      const height = Math.max(2, minHeight);
       const widget: WidgetDetailsType = {
         id,
         x: initX,
         y: initY,
         width,
         height,
+        minWidth,
+        minHeight,
         content: child,
       };
       id++;
-      initX += 2;
+      initX += width;
 
       return widget;
     });

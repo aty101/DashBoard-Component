@@ -24,8 +24,8 @@ export function calcNewSize({
   // Check if the size didnt pass the min and max
   const maxWidth = maxCols - (currentWidget.x - 1);
 
-  const newWidth = Math.min(maxWidth, Math.max(gridWidth, 1));
-  const newHeight = Math.max(gridHeight, 1);
+  const newWidth = Math.min(maxWidth, Math.max(gridWidth, currentWidget.minWidth));
+  const newHeight = Math.max(gridHeight, currentWidget.minHeight);
 
   // Placeholder current size
   const finalWidth = Math.round(newWidth);

@@ -32,7 +32,6 @@ export const dragging = ({
 
   const { offsetX, offsetY } = draggingOffsetsRef.current;
   const currentWidget = currentWidgetRef.current;
-  const parent = parentRef.current;
 
   // Step 1: Calculate finalX and preliminary realY (newY) based on pointer event and limits
   const { finalPosX, newX, newY, realY } = calcNewPos({

@@ -6,6 +6,8 @@ export type WidgetDetailsType = {
   y: number;
   width: number;
   height: number;
+  minWidth: number;
+  minHeight: number;
   content: ReactNode;
 };
 

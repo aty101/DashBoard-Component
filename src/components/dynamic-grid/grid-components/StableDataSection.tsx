@@ -13,16 +13,14 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
   if (!context) {
     throw new Error("useGridContext must be used within GridContextProvider");
   }
+
   const { gridSize, handleDraggingStart, handleResizeStart } = context;
 
-  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize ?? {
-    COL_WIDTH: 0,
-    ROW_HEIGHT: 0,
-    GAP: 0,
-  };
+  const { COL_WIDTH, ROW_HEIGHT, GAP } = gridSize;
   /* ...WIDGET STYLES... */
 
   // Calc current size in grid units
+
   const width = widget.width * COL_WIDTH + GAP * (widget.width - 1);
   const height = widget.height * ROW_HEIGHT + GAP * (widget.height - 1);
 
@@ -43,14 +41,14 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
     (e: React.PointerEvent<HTMLElement>) => {
       handleDraggingStart(widget.id, e);
     },
-    [handleDraggingStart, widget.id]
+    [handleDraggingStart, widget]
   );
   const resizePointerDown = useCallback(
     (e: React.PointerEvent<HTMLElement>) => {
       e.stopPropagation();
       handleResizeStart(widget.id, e);
     },
-    [handleResizeStart, widget.id]
+    [handleResizeStart, widget]
   );
 
   return (
@@ -64,15 +62,15 @@ function DataSection({ widget, isDragged = false }: DataSectionProps) {
         cursor,
         transitionDuration: isDragged ? "0s" : "0.2s",
       }}
-      className="absolute bg-blue-100   p-1 select-none border border-black text-3xl"
+      className=" absolute bg-transparent   p-1 select-none  text-3xl overflow-hidden"
     >
       <div className="w-full h-full relative  ">
         {widget.content}
         <span
           onPointerDown={resizePointerDown}
-          className="absolute  bottom-0 right-0  w-5 h-5 cursor-se-resize"
+          className="absolute  bottom-0 right-0  w-5 h-5 cursor-nwse-resize"
         >
-          <span className="absolute bottom-0 right-0 border-black border-b-2 border-r-2  w-2.5 h-2.5"></span>
+          <span className="absolute bottom-2 right-2 border-black border-b-2 border-r-2  w-2.5 h-2.5 "></span>
         </span>
       </div>
     </section>

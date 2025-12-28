@@ -4,6 +4,7 @@ import { WidgetDetailsType } from "../types";
 export function useWidgetDetails(
   widgetsDetailsRef: RefObject<WidgetDetailsType[]>,
   widgetsDetails: WidgetDetailsType[]
+
 ) {
   const changeWidgetDetailsRef = useEffectEvent(
     (widgets: WidgetDetailsType[]) => {

@@ -1,5 +1,5 @@
 import { collisionResolve } from "../../collisionFunctions/collisionResolve";
-import { siblingsCollision } from "../../collisionFunctions/siblingsCollision";
+
 import { widgetsCompaction } from "../../collisionFunctions/widgetsCompaction";
 import { ResizingParams } from "../resizingTypesAndParams";
 import { calcNewSize } from "./calcnewSize";
